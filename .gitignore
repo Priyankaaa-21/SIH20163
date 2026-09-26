@@ -1,0 +1,7 @@
+venv/
+backend/.venv/
+backend/__pycache__/
+frontend/node_modules/
+sih_assessment.db
+*.pyc
+.DS_Store

@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "updatedAt": "2026-09-15T00:00:00Z",
+  "note": "Product-managed curated list. Not user-configurable.",
+  "channels": {
+    "full": [
+      {
+        "handle": "PikudHaOref_all",
+        "label": "Israel Home Front Command",
+        "topic": "middleeast",
+        "tier": 1,
+        "enabled": true,
+        "region": "israel",
+        "maxMessages": 25
+      },
+      {
+        "handle": "OSINTdefender",
+        "label": "OSINTdefender",
+        "topic": "conflict",
+        "tier": 2,
+        "enabled": true,
+        "region": "global",
+        "maxMessages": 25
+      }
+    ]
+  }
+}
