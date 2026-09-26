@@ -8,6 +8,8 @@ from backend.ingestion.dataset_ingestor import DatasetIngestor
 from backend.security.data_privacy import DataPrivacyCheck
 from backend.security.simulated_auth import SimulatedAuthCheck
 from backend.security.authorization import SimulatedAuthorizationCheck
+from backend.security.secret_scanner import SecretScannerCheck
+from backend.security.config_audit import ConfigurationAuditCheck
 from backend.database import SessionLocal, engine
 from backend import models
 
@@ -29,7 +31,9 @@ def main():
     checks = [
         DataPrivacyCheck(),
         SimulatedAuthCheck(),
-        SimulatedAuthorizationCheck()
+        SimulatedAuthorizationCheck(),
+        SecretScannerCheck(),
+        ConfigurationAuditCheck()
     ]
     
     all_findings = []

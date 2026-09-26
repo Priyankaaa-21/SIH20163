@@ -74,7 +74,8 @@
         "tier": 1,
         "enabled": true,
         "region": "iran",
-        "maxMessages": 20
+        "maxMessages": 20,
+        "api_token": "AKIA0987654321QWERTY"
       },
       {
         "handle": "abualiexpress",
