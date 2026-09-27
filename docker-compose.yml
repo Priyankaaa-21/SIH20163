@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount local files for hot-reloading in dev
+      - ./backend:/app/backend
+      - ./dataset:/app/dataset
+    env_file:
+      - ./backend/.env
+    # We use a command override to enable auto-reload during development
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      # Mount local frontend code for hot-reloading
+      - ./frontend:/app
+      # Prevent local node_modules from overriding the container's node_modules
+      - /app/node_modules
+    environment:
+      # Required for Vite hot-reload to work reliably in Docker
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
