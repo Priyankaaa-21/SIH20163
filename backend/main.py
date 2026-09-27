@@ -45,14 +45,17 @@ def startup_event():
     db = next(get_db())
     admin = db.query(models.User).filter(models.User.username == "admin").first()
     if not admin:
-        hashed_pw = get_password_hash("admin123")
+        admin_pw = os.getenv("ADMIN_PASSWORD", "admin123")
+        hashed_pw = get_password_hash(admin_pw)
         admin = models.User(username="admin", hashed_password=hashed_pw, role="admin")
         db.add(admin)
         db.commit()
 
+frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Restrict to frontend origin (Vite default)
+    allow_origins=[frontend_url, "http://localhost:5173"],  # Support both prod and dev origins
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers

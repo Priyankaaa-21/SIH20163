@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    restart: always
+    # No volume mounts or --reload commands for production!
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        # When you run `docker-compose -f docker-compose.prod.yml up` 
+        # ensure this variable is passed if not running on the same domain.
+        - VITE_API_URL=${VITE_API_URL:-http://localhost:8000}
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
