@@ -1,0 +1,30 @@
+{
+  "source": "IAEA DIIF - Database on Industrial Irradiation Facilities",
+  "tableauUrl": "https://public.tableau.com/app/profile/acceleratorknowledgeportal/viz/IrradiatorDatabase/Home",
+  "extracted": "2026-01-09",
+  "totalFacilities": 136,
+  "note": "Gamma irradiator facilities worldwide. Coordinates have been intentionally JITTERED (fuzzed) for security purposes.",
+  "facilities": [
+    {
+      "id": "gi-001",
+      "city": "Vega Alta",
+      "country": "Puerto Rico",
+      "lat": 18.4052,
+      "lon": -66.352113
+    },
+    {
+      "id": "gi-047",
+      "city": "Moscow",
+      "country": "Russia",
+      "lat": 55.732385,
+      "lon": 37.646843
+    },
+    {
+      "id": "gi-128",
+      "city": "Yavne",
+      "country": "Israel",
+      "lat": 32.033629,
+      "lon": 34.749819
+    }
+  ]
+}

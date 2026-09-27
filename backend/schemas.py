@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 import enum
+from .models import SeverityEnum, FindingStatusEnum
 
 class EvidenceBase(BaseModel):
     evidence_type: str
@@ -21,14 +22,14 @@ class Evidence(EvidenceBase):
 class FindingBase(BaseModel):
     title: str
     category: str
-    severity: str
+    severity: SeverityEnum
     cvss: Optional[str] = None
     confidence: str
     affected_component: str
     description: str
     impact: str
     remediation: str
-    status: str
+    status: FindingStatusEnum
 
 class FindingCreate(FindingBase):
     evidence: List[EvidenceCreate] = []
