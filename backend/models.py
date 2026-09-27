@@ -17,6 +17,14 @@ class FindingStatusEnum(str, enum.Enum):
     needs_validation = "Needs Validation"
     confirmed = "Confirmed"
 
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
+    role = Column(String, default="user")
+
 class Finding(Base):
     __tablename__ = "findings"
 

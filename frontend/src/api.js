@@ -35,3 +35,8 @@ export const getFindingDetails = async (id) => {
   const response = await api.get(`/findings/${id}`);
   return response.data;
 };
+
+export const getFacilities = async () => {
+  const response = await api.get('/facilities/');
+  return response.data;
+};

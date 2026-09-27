@@ -6,12 +6,22 @@ from sqlalchemy.orm import Session
 from typing import List
 import jwt
 import os
+import json
 from dotenv import load_dotenv
 
 load_dotenv()  # Load environment variables from .env file
 
 from . import models, schemas
 from .database import engine, get_db
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -22,6 +32,16 @@ app = FastAPI(
     redoc_url=None, 
     openapi_url=None
 )
+
+@app.on_event("startup")
+def startup_event():
+    db = next(get_db())
+    admin = db.query(models.User).filter(models.User.username == "admin").first()
+    if not admin:
+        hashed_pw = get_password_hash("admin123")
+        admin = models.User(username="admin", hashed_password=hashed_pw, role="admin")
+        db.add(admin)
+        db.commit()
 
 app.add_middleware(
     CORSMiddleware,
@@ -57,18 +77,30 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     return {"username": username, "role": role}
 
 @app.post("/token")
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    # Basic mock authentication - in a real app, query the database
-    if form_data.username == "admin" and form_data.password == "admin123":
-        payload = {
-            "sub": form_data.username,
-            "role": "admin",
-            # Expiration fixes the security finding
-            "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)
-        }
-        token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-        return {"access_token": token, "token_type": "bearer"}
-    raise HTTPException(status_code=400, detail="Incorrect username or password")
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.username == form_data.username).first()
+    if not user or not verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    
+    payload = {
+        "sub": user.username,
+        "role": user.role,
+        "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)
+    }
+    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    return {"access_token": token, "token_type": "bearer"}
+
+@app.post("/users/", response_model=schemas.UserResponse)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(models.User.username == user.username).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Username already registered")
+    hashed_password = get_password_hash(user.password)
+    db_user = models.User(username=user.username, hashed_password=hashed_password, role=user.role)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
 
 @app.get("/")
 def read_root():
@@ -78,6 +110,18 @@ def read_root():
 def read_findings(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     findings = db.query(models.Finding).offset(skip).limit(limit).all()
     return findings
+
+@app.get("/facilities/")
+def read_facilities(current_user: dict = Depends(get_current_user)):
+    try:
+        # Use absolute path resolution relative to main.py
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        dataset_path = os.path.join(current_dir, "..", "dataset", "iaea_diif_db_safe.json")
+        with open(dataset_path, "r") as f:
+            data = json.load(f)
+            return data.get("facilities", [])
+    except Exception as e:
+        return []
 
 @app.get("/findings/{finding_id}", response_model=schemas.Finding)
 def read_finding(finding_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):

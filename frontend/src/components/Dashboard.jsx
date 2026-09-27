@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getFindings } from '../api';
 import { ShieldAlert, CheckCircle, Search, AlertTriangle, Eye } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import MapWidget from './MapWidget';
 
 const severityColors = {
   High: '#f97316',
@@ -60,6 +61,8 @@ const Dashboard = () => {
           <div className="metric-value">{findings.filter(f => f.status === 'Confirmed').length}</div>
         </div>
       </div>
+
+      <MapWidget />
 
       <div className="grid-charts">
         <div className="glass-panel">

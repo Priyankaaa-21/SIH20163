@@ -4,6 +4,18 @@ from datetime import datetime
 import enum
 from .models import SeverityEnum, FindingStatusEnum
 
+class UserBase(BaseModel):
+    username: str
+    role: str = "user"
+
+class UserCreate(UserBase):
+    password: str
+
+class UserResponse(UserBase):
+    id: int
+    class Config:
+        orm_mode = True
+
 class EvidenceBase(BaseModel):
     evidence_type: str
     description: str
