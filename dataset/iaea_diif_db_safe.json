@@ -1,30 +1,708 @@
 {
-  "source": "IAEA DIIF - Database on Industrial Irradiation Facilities",
-  "tableauUrl": "https://public.tableau.com/app/profile/acceleratorknowledgeportal/viz/IrradiatorDatabase/Home",
-  "extracted": "2026-01-09",
-  "totalFacilities": 136,
+  "source": "IAEA DIIF - Database on Industrial Irradiation Facilities (Expanded Demo)",
+  "extracted": "2026-09-27",
+  "totalFacilities": 100,
   "note": "Gamma irradiator facilities worldwide. Coordinates have been intentionally JITTERED (fuzzed) for security purposes.",
   "facilities": [
     {
       "id": "gi-001",
-      "city": "Vega Alta",
-      "country": "Puerto Rico",
-      "lat": 18.4052,
-      "lon": -66.352113
+      "city": "Barakah (Region)",
+      "country": "UAE",
+      "lat": 24.9802,
+      "lon": 53.6436
+    },
+    {
+      "id": "gi-002",
+      "city": "Rovno (Region)",
+      "country": "Ukraine",
+      "lat": 51.9153,
+      "lon": 24.8494
+    },
+    {
+      "id": "gi-003",
+      "city": "Richland (Region)",
+      "country": "USA",
+      "lat": 47.0989,
+      "lon": -118.1517
+    },
+    {
+      "id": "gi-004",
+      "city": "Richland (Region)",
+      "country": "USA",
+      "lat": 45.9452,
+      "lon": -119.0939
+    },
+    {
+      "id": "gi-005",
+      "city": "Novovoronezh (Region)",
+      "country": "Russia",
+      "lat": 50.9362,
+      "lon": 37.7145
+    },
+    {
+      "id": "gi-006",
+      "city": "Fukushima (Region)",
+      "country": "Japan",
+      "lat": 36.8094,
+      "lon": 142.1962
+    },
+    {
+      "id": "gi-007",
+      "city": "Bucha (Region)",
+      "country": "Ukraine",
+      "lat": 50.3937,
+      "lon": 30.2397
+    },
+    {
+      "id": "gi-008",
+      "city": "Doel (Region)",
+      "country": "Belgium",
+      "lat": 50.8171,
+      "lon": 4.1403
+    },
+    {
+      "id": "gi-009",
+      "city": "Fukushima (Region)",
+      "country": "Japan",
+      "lat": 38.7176,
+      "lon": 141.8825
+    },
+    {
+      "id": "gi-010",
+      "city": "Bruce (Region)",
+      "country": "Canada",
+      "lat": 44.1078,
+      "lon": -82.0374
+    },
+    {
+      "id": "gi-011",
+      "city": "Bushehr (Region)",
+      "country": "Iran",
+      "lat": 27.7858,
+      "lon": 51.8899
+    },
+    {
+      "id": "gi-012",
+      "city": "Koeberg (Region)",
+      "country": "South Africa",
+      "lat": -34.1571,
+      "lon": 18.5721
+    },
+    {
+      "id": "gi-013",
+      "city": "Doel (Region)",
+      "country": "Belgium",
+      "lat": 52.3316,
+      "lon": 5.5699
+    },
+    {
+      "id": "gi-014",
+      "city": "Forsmark (Region)",
+      "country": "Sweden",
+      "lat": 61.1843,
+      "lon": 19.2936
+    },
+    {
+      "id": "gi-015",
+      "city": "Sellafield (Region)",
+      "country": "UK",
+      "lat": 54.7105,
+      "lon": -3.0938
+    },
+    {
+      "id": "gi-016",
+      "city": "Forsmark (Region)",
+      "country": "Sweden",
+      "lat": 61.3324,
+      "lon": 17.2384
+    },
+    {
+      "id": "gi-017",
+      "city": "Sellafield (Region)",
+      "country": "UK",
+      "lat": 55.3261,
+      "lon": -4.9869
+    },
+    {
+      "id": "gi-018",
+      "city": "Olkiluoto (Region)",
+      "country": "Finland",
+      "lat": 61.789,
+      "lon": 20.2506
+    },
+    {
+      "id": "gi-019",
+      "city": "Rovno (Region)",
+      "country": "Ukraine",
+      "lat": 50.968,
+      "lon": 24.6148
+    },
+    {
+      "id": "gi-020",
+      "city": "Kudankulam (Region)",
+      "country": "India",
+      "lat": 7.5157,
+      "lon": 79.092
+    },
+    {
+      "id": "gi-021",
+      "city": "Bruce (Region)",
+      "country": "Canada",
+      "lat": 45.5448,
+      "lon": -82.1706
+    },
+    {
+      "id": "gi-022",
+      "city": "Bucha (Region)",
+      "country": "Ukraine",
+      "lat": 50.8696,
+      "lon": 29.351
+    },
+    {
+      "id": "gi-023",
+      "city": "Kola (Region)",
+      "country": "Russia",
+      "lat": 67.0952,
+      "lon": 32.6379
+    },
+    {
+      "id": "gi-024",
+      "city": "Los Alamos (Region)",
+      "country": "USA",
+      "lat": 36.9927,
+      "lon": -104.9704
+    },
+    {
+      "id": "gi-025",
+      "city": "La Hague (Region)",
+      "country": "France",
+      "lat": 48.6464,
+      "lon": -2.0037
+    },
+    {
+      "id": "gi-026",
+      "city": "Bruce (Region)",
+      "country": "Canada",
+      "lat": 44.8264,
+      "lon": -80.7432
+    },
+    {
+      "id": "gi-027",
+      "city": "Richland (Region)",
+      "country": "USA",
+      "lat": 47.0876,
+      "lon": -118.1924
+    },
+    {
+      "id": "gi-028",
+      "city": "Natanz (Region)",
+      "country": "Iran",
+      "lat": 34.4736,
+      "lon": 50.6611
+    },
+    {
+      "id": "gi-029",
+      "city": "Forsmark (Region)",
+      "country": "Sweden",
+      "lat": 60.2896,
+      "lon": 17.9953
+    },
+    {
+      "id": "gi-030",
+      "city": "Bruce (Region)",
+      "country": "Canada",
+      "lat": 45.2836,
+      "lon": -82.2449
+    },
+    {
+      "id": "gi-031",
+      "city": "Tianwan (Region)",
+      "country": "China",
+      "lat": 33.7774,
+      "lon": 120.6111
+    },
+    {
+      "id": "gi-032",
+      "city": "Kudankulam (Region)",
+      "country": "India",
+      "lat": 8.1591,
+      "lon": 76.8191
+    },
+    {
+      "id": "gi-033",
+      "city": "Bushehr (Region)",
+      "country": "Iran",
+      "lat": 30.0711,
+      "lon": 50.4798
+    },
+    {
+      "id": "gi-034",
+      "city": "Cernavoda (Region)",
+      "country": "Romania",
+      "lat": 45.7105,
+      "lon": 28.9284
+    },
+    {
+      "id": "gi-035",
+      "city": "Rovno (Region)",
+      "country": "Ukraine",
+      "lat": 52.0981,
+      "lon": 26.9726
+    },
+    {
+      "id": "gi-036",
+      "city": "Barakah (Region)",
+      "country": "UAE",
+      "lat": 22.7198,
+      "lon": 50.8129
+    },
+    {
+      "id": "gi-037",
+      "city": "Bushehr (Region)",
+      "country": "Iran",
+      "lat": 30.045,
+      "lon": 51.3869
+    },
+    {
+      "id": "gi-038",
+      "city": "Chernobyl (Region)",
+      "country": "Ukraine",
+      "lat": 50.1791,
+      "lon": 29.0351
+    },
+    {
+      "id": "gi-039",
+      "city": "Natanz (Region)",
+      "country": "Iran",
+      "lat": 33.8392,
+      "lon": 51.2169
+    },
+    {
+      "id": "gi-040",
+      "city": "Angra (Region)",
+      "country": "Brazil",
+      "lat": -24.1169,
+      "lon": -44.9129
+    },
+    {
+      "id": "gi-041",
+      "city": "La Hague (Region)",
+      "country": "France",
+      "lat": 49.3879,
+      "lon": -0.716
+    },
+    {
+      "id": "gi-042",
+      "city": "Oak Ridge (Region)",
+      "country": "USA",
+      "lat": 37.0371,
+      "lon": -85.465
+    },
+    {
+      "id": "gi-043",
+      "city": "Novovoronezh (Region)",
+      "country": "Russia",
+      "lat": 51.8386,
+      "lon": 39.5797
+    },
+    {
+      "id": "gi-044",
+      "city": "Mochovce (Region)",
+      "country": "Slovakia",
+      "lat": 47.8411,
+      "lon": 17.6116
+    },
+    {
+      "id": "gi-045",
+      "city": "Kola (Region)",
+      "country": "Russia",
+      "lat": 67.4796,
+      "lon": 33.9466
+    },
+    {
+      "id": "gi-046",
+      "city": "Haiyang (Region)",
+      "country": "China",
+      "lat": 36.1558,
+      "lon": 122.76
     },
     {
       "id": "gi-047",
-      "city": "Moscow",
-      "country": "Russia",
-      "lat": 55.732385,
-      "lon": 37.646843
+      "city": "Oak Ridge (Region)",
+      "country": "USA",
+      "lat": 34.681,
+      "lon": -85.6425
     },
     {
-      "id": "gi-128",
-      "city": "Yavne",
-      "country": "Israel",
-      "lat": 32.033629,
-      "lon": 34.749819
+      "id": "gi-048",
+      "city": "Atucha (Region)",
+      "country": "Argentina",
+      "lat": -34.4089,
+      "lon": -58.4291
+    },
+    {
+      "id": "gi-049",
+      "city": "Bruce (Region)",
+      "country": "Canada",
+      "lat": 42.8714,
+      "lon": -82.1119
+    },
+    {
+      "id": "gi-050",
+      "city": "La Hague (Region)",
+      "country": "France",
+      "lat": 50.9575,
+      "lon": -2.2648
+    },
+    {
+      "id": "gi-051",
+      "city": "Haiyang (Region)",
+      "country": "China",
+      "lat": 38.1412,
+      "lon": 122.5599
+    },
+    {
+      "id": "gi-052",
+      "city": "Haiyang (Region)",
+      "country": "China",
+      "lat": 36.8576,
+      "lon": 122.5952
+    },
+    {
+      "id": "gi-053",
+      "city": "Novovoronezh (Region)",
+      "country": "Russia",
+      "lat": 50.0611,
+      "lon": 37.8372
+    },
+    {
+      "id": "gi-054",
+      "city": "Tianwan (Region)",
+      "country": "China",
+      "lat": 34.0578,
+      "lon": 119.0247
+    },
+    {
+      "id": "gi-055",
+      "city": "La Hague (Region)",
+      "country": "France",
+      "lat": 49.0153,
+      "lon": -3.0581
+    },
+    {
+      "id": "gi-056",
+      "city": "Paks (Region)",
+      "country": "Hungary",
+      "lat": 46.5942,
+      "lon": 17.987
+    },
+    {
+      "id": "gi-057",
+      "city": "Karachi (Region)",
+      "country": "Pakistan",
+      "lat": 25.1683,
+      "lon": 67.1389
+    },
+    {
+      "id": "gi-058",
+      "city": "Los Alamos (Region)",
+      "country": "USA",
+      "lat": 35.0106,
+      "lon": -107.063
+    },
+    {
+      "id": "gi-059",
+      "city": "Bruce (Region)",
+      "country": "Canada",
+      "lat": 43.7919,
+      "lon": -82.8892
+    },
+    {
+      "id": "gi-060",
+      "city": "Los Alamos (Region)",
+      "country": "USA",
+      "lat": 34.6891,
+      "lon": -105.1797
+    },
+    {
+      "id": "gi-061",
+      "city": "Karachi (Region)",
+      "country": "Pakistan",
+      "lat": 24.6191,
+      "lon": 66.1989
+    },
+    {
+      "id": "gi-062",
+      "city": "Kola (Region)",
+      "country": "Russia",
+      "lat": 67.1005,
+      "lon": 33.2845
+    },
+    {
+      "id": "gi-063",
+      "city": "Doel (Region)",
+      "country": "Belgium",
+      "lat": 50.7475,
+      "lon": 3.762
+    },
+    {
+      "id": "gi-064",
+      "city": "Doel (Region)",
+      "country": "Belgium",
+      "lat": 51.3782,
+      "lon": 4.2206
+    },
+    {
+      "id": "gi-065",
+      "city": "Rovno (Region)",
+      "country": "Ukraine",
+      "lat": 50.8751,
+      "lon": 27.3321
+    },
+    {
+      "id": "gi-066",
+      "city": "Forsmark (Region)",
+      "country": "Sweden",
+      "lat": 60.9234,
+      "lon": 19.0461
+    },
+    {
+      "id": "gi-067",
+      "city": "Bucha (Region)",
+      "country": "Ukraine",
+      "lat": 49.2888,
+      "lon": 29.1527
+    },
+    {
+      "id": "gi-068",
+      "city": "Oak Ridge (Region)",
+      "country": "USA",
+      "lat": 37.12,
+      "lon": -83.0233
+    },
+    {
+      "id": "gi-069",
+      "city": "Haiyang (Region)",
+      "country": "China",
+      "lat": 35.2526,
+      "lon": 122.3137
+    },
+    {
+      "id": "gi-070",
+      "city": "Oak Ridge (Region)",
+      "country": "USA",
+      "lat": 36.7272,
+      "lon": -83.0058
+    },
+    {
+      "id": "gi-071",
+      "city": "La Hague (Region)",
+      "country": "France",
+      "lat": 50.4235,
+      "lon": -2.3316
+    },
+    {
+      "id": "gi-072",
+      "city": "Natanz (Region)",
+      "country": "Iran",
+      "lat": 34.0164,
+      "lon": 51.0054
+    },
+    {
+      "id": "gi-073",
+      "city": "Forsmark (Region)",
+      "country": "Sweden",
+      "lat": 60.217,
+      "lon": 18.2441
+    },
+    {
+      "id": "gi-074",
+      "city": "Koeberg (Region)",
+      "country": "South Africa",
+      "lat": -34.8499,
+      "lon": 18.8363
+    },
+    {
+      "id": "gi-075",
+      "city": "Kudankulam (Region)",
+      "country": "India",
+      "lat": 8.3481,
+      "lon": 77.686
+    },
+    {
+      "id": "gi-076",
+      "city": "Olkiluoto (Region)",
+      "country": "Finland",
+      "lat": 59.9408,
+      "lon": 22.639
+    },
+    {
+      "id": "gi-077",
+      "city": "Karachi (Region)",
+      "country": "Pakistan",
+      "lat": 25.0887,
+      "lon": 65.5649
+    },
+    {
+      "id": "gi-078",
+      "city": "Natanz (Region)",
+      "country": "Iran",
+      "lat": 34.0734,
+      "lon": 51.3389
+    },
+    {
+      "id": "gi-079",
+      "city": "Mochovce (Region)",
+      "country": "Slovakia",
+      "lat": 46.7857,
+      "lon": 19.2008
+    },
+    {
+      "id": "gi-080",
+      "city": "Paks (Region)",
+      "country": "Hungary",
+      "lat": 46.4835,
+      "lon": 18.4642
+    },
+    {
+      "id": "gi-081",
+      "city": "Forsmark (Region)",
+      "country": "Sweden",
+      "lat": 60.5325,
+      "lon": 19.3087
+    },
+    {
+      "id": "gi-082",
+      "city": "Forsmark (Region)",
+      "country": "Sweden",
+      "lat": 59.1131,
+      "lon": 17.5368
+    },
+    {
+      "id": "gi-083",
+      "city": "Natanz (Region)",
+      "country": "Iran",
+      "lat": 33.1451,
+      "lon": 52.6399
+    },
+    {
+      "id": "gi-084",
+      "city": "Seoul (Region)",
+      "country": "South Korea",
+      "lat": 37.5798,
+      "lon": 126.2891
+    },
+    {
+      "id": "gi-085",
+      "city": "Richland (Region)",
+      "country": "USA",
+      "lat": 47.1082,
+      "lon": -118.5947
+    },
+    {
+      "id": "gi-086",
+      "city": "Sellafield (Region)",
+      "country": "UK",
+      "lat": 54.7924,
+      "lon": -2.5878
+    },
+    {
+      "id": "gi-087",
+      "city": "Rovno (Region)",
+      "country": "Ukraine",
+      "lat": 52.4509,
+      "lon": 26.7626
+    },
+    {
+      "id": "gi-088",
+      "city": "Rovno (Region)",
+      "country": "Ukraine",
+      "lat": 52.3292,
+      "lon": 25.3423
+    },
+    {
+      "id": "gi-089",
+      "city": "Haiyang (Region)",
+      "country": "China",
+      "lat": 37.9341,
+      "lon": 120.3663
+    },
+    {
+      "id": "gi-090",
+      "city": "Barakah (Region)",
+      "country": "UAE",
+      "lat": 25.0803,
+      "lon": 51.5444
+    },
+    {
+      "id": "gi-091",
+      "city": "La Hague (Region)",
+      "country": "France",
+      "lat": 50.5603,
+      "lon": -0.848
+    },
+    {
+      "id": "gi-092",
+      "city": "Los Alamos (Region)",
+      "country": "USA",
+      "lat": 36.2203,
+      "lon": -105.4733
+    },
+    {
+      "id": "gi-093",
+      "city": "Chernobyl (Region)",
+      "country": "Ukraine",
+      "lat": 51.9898,
+      "lon": 29.4692
+    },
+    {
+      "id": "gi-094",
+      "city": "Novovoronezh (Region)",
+      "country": "Russia",
+      "lat": 50.1845,
+      "lon": 39.81
+    },
+    {
+      "id": "gi-095",
+      "city": "Kola (Region)",
+      "country": "Russia",
+      "lat": 67.9998,
+      "lon": 31.3588
+    },
+    {
+      "id": "gi-096",
+      "city": "Richland (Region)",
+      "country": "USA",
+      "lat": 47.3512,
+      "lon": -119.052
+    },
+    {
+      "id": "gi-097",
+      "city": "Rovno (Region)",
+      "country": "Ukraine",
+      "lat": 50.0644,
+      "lon": 25.1433
+    },
+    {
+      "id": "gi-098",
+      "city": "Rovno (Region)",
+      "country": "Ukraine",
+      "lat": 51.0547,
+      "lon": 24.458
+    },
+    {
+      "id": "gi-099",
+      "city": "Los Alamos (Region)",
+      "country": "USA",
+      "lat": 34.61,
+      "lon": -107.3513
+    },
+    {
+      "id": "gi-100",
+      "city": "Richland (Region)",
+      "country": "USA",
+      "lat": 46.4832,
+      "lon": -117.8381
     }
   ]
 }
