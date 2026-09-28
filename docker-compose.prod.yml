@@ -10,7 +10,9 @@ services:
     env_file:
       - ./backend/.env
     restart: always
-    # No volume mounts or --reload commands for production!
+    # No volume mounts or --reload commands for production! (except for SQLite DB)
+    volumes:
+      - dbdata:/app/data
 
   frontend:
     build:
@@ -25,3 +27,6 @@ services:
     depends_on:
       - backend
     restart: always
+
+volumes:
+  dbdata:

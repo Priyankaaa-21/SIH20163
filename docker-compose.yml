@@ -11,10 +11,11 @@ services:
       # Mount local files for hot-reloading in dev
       - ./backend:/app/backend
       - ./dataset:/app/dataset
+      - dbdata:/app/data
     env_file:
       - ./backend/.env
     # We use a command override to enable auto-reload during development
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
 
   frontend:
     build:
@@ -32,3 +33,6 @@ services:
       - CHOKIDAR_USEPOLLING=true
     depends_on:
       - backend
+
+volumes:
+  dbdata:

@@ -65,7 +65,9 @@ app.add_middleware(
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Secret key to encode and decode JWT tokens loaded from environment variables
-SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-if-missing")
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY or SECRET_KEY == "fallback-secret-if-missing":
+    raise RuntimeError("SECRET_KEY environment variable is not set. Refusing to start.")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -107,7 +109,8 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
     hashed_password = get_password_hash(user.password)
-    db_user = models.User(username=user.username, hashed_password=hashed_password, role=user.role)
+    # Force role to "user" to prevent self-registering as admin
+    db_user = models.User(username=user.username, hashed_password=hashed_password, role="user")
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
