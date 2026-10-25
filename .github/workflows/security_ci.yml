@@ -20,12 +20,12 @@ jobs:
         with:
           python-version: "3.10"
           cache: "pip"
+          cache-dependency-path: backend/requirements.txt
 
       - name: Install Backend Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
-          pip install pytest httpx pip-audit
 
       - name: Run Pytest Test Suite
         env:
@@ -33,12 +33,13 @@ jobs:
           ALGORITHM: "HS256"
           ADMIN_PASSWORD: "CiTestStrongPassword2026!"
           FRONTEND_URL: "http://localhost:5173"
+          PYTHONPATH: "."
         run: |
           pytest tests/ -v
 
       - name: Run pip-audit Vulnerability Scan
         run: |
-          pip-audit --desc || echo "pip-audit completed with findings"
+          pip-audit -r backend/requirements.txt --desc || echo "pip-audit completed with findings"
 
   frontend-audit:
     name: Frontend npm audit
