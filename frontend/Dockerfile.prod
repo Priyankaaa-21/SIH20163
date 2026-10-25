@@ -8,16 +8,21 @@ RUN npm install
 # Copy source and build for production
 COPY . .
 
-# Vite requires env vars at build time
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 
 RUN npm run build
 
-# Serve with Nginx
+# Production web server
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
-# A custom nginx configuration handles SPA routing
+
+# Grant ownership to non-root nginx user
+RUN touch /var/run/nginx.pid && \
+    chown -R nginx:nginx /var/run/nginx.pid /usr/share/nginx/html /var/cache/nginx /var/log/nginx /etc/nginx/conf.d
+
+USER nginx
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

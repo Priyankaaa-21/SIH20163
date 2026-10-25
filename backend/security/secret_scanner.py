@@ -1,5 +1,6 @@
 from typing import List, Dict, Any
 from .base import SecurityCheck
+from .cvss import format_cvss
 import re
 
 class SecretScannerCheck(SecurityCheck):
@@ -42,8 +43,10 @@ class SecretScannerCheck(SecurityCheck):
             "title": f"Hardcoded Secrets Detected: {secret_type}",
             "category": "Credentials Management",
             "severity": "Critical",
-            "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N (10.0)",
+            "cvss": format_cvss("CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N"),  # 10.0
             "confidence": "High",
+            "cwe": "CWE-798: Use of Hard-coded Credentials",
+            "owasp": "API2:2023 Broken Authentication",
             "affected_component": f"Dataset Field: {path}.{key}",
             "description": f"The dataset contains a hardcoded or exposed secret in the field '{key}'. Exposing tokens or passwords in datasets can lead to unauthorized access to associated third-party services.",
             "impact": "An attacker could extract this token and authenticate to downstream services (APIs, databases, AWS) as the application, resulting in data breaches or system compromise.",

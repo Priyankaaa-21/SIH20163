@@ -1,5 +1,6 @@
 from typing import List, Dict, Any
 from abc import ABC, abstractmethod
+from .cvss import cvss_score, format_cvss
 
 class SecurityCheck(ABC):
     

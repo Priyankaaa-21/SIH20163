@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Lock, User } from 'lucide-react';
+import { Shield, Lock, User, AlertCircle } from 'lucide-react';
 import { login } from '../api';
 
 const Login = ({ setAuthenticated }) => {
@@ -10,71 +10,113 @@ const Login = ({ setAuthenticated }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!username || !password) {
+      setError('Please provide both username and password.');
+      return;
+    }
+    setError('');
     setIsLoading(true);
     try {
-      const response = await login(username, password);
-      localStorage.setItem('token', response.access_token);
+      await login(username, password);
       setAuthenticated(true);
     } catch (err) {
-      setError('Invalid username or password');
+      const detail = err.response?.data?.detail || 'Invalid username or password';
+      setError(detail);
       setIsLoading(false);
     }
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '1rem' }}>
-      <div className="glass-panel" style={{ width: '100%', maxWidth: '420px', padding: '3rem 2rem', textAlign: 'center' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-          <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '1rem', borderRadius: '50%', boxShadow: 'var(--shadow-glow)' }}>
-            <Shield size={48} color="#60a5fa" />
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 'var(--space-4)' }}>
+      <div className="panel" style={{ width: '100%', maxWidth: '400px', padding: 'var(--space-8)' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'var(--space-6)' }}>
+          <div style={{ display: 'inline-flex', padding: 'var(--space-3)', background: 'var(--accent-subtle)', borderRadius: 'var(--radius)', marginBottom: 'var(--space-3)' }}>
+            <Shield size={32} color="var(--accent-light)" />
+          </div>
+          <h1 style={{ margin: '0 0 var(--space-1) 0', fontSize: 'var(--text-lg)', fontWeight: '700' }}>
+            World Monitor
+          </h1>
+          <div style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
+            Security Assessment Platform
           </div>
         </div>
-        
-        <h1 style={{ margin: '0 0 0.5rem 0', fontSize: '1.75rem', fontWeight: '700', background: 'linear-gradient(135deg, #f3f4f6 0%, #9ca3af 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          World Monitor
-        </h1>
-        <p style={{ color: 'var(--text-muted)', margin: '0 0 2.5rem 0' }}>Security Assessment Platform</p>
-        
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          {error && (
-            <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#fca5a5', padding: '0.75rem', borderRadius: '8px', fontSize: '0.875rem' }}>
-              {error}
+
+        {error && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#fca5a5', padding: 'var(--space-3)', borderRadius: 'var(--radius)', fontSize: 'var(--text-sm)', marginBottom: 'var(--space-4)' }}>
+            <AlertCircle size={16} />
+            <span>{error}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          <div>
+            <label htmlFor="username-input" style={{ display: 'block', fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
+              Username
+            </label>
+            <div style={{ position: 'relative' }}>
+              <User size={16} color="var(--text-tertiary)" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+              <input
+                id="username-input"
+                type="text"
+                autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter username"
+                className="filter-input"
+                style={{ width: '100%', paddingLeft: '36px' }}
+                required
+              />
             </div>
-          )}
-          
-          <div style={{ position: 'relative' }}>
-            <User size={20} color="var(--text-muted)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
-            <input 
-              type="text" 
-              placeholder="Username"
-              value={username} 
-              onChange={(e) => setUsername(e.target.value)} 
-              style={{ boxSizing: 'border-box', width: '100%', padding: '0.875rem 1rem 0.875rem 3rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'rgba(0,0,0,0.2)', color: 'white', fontSize: '1rem', outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }}
-              onFocus={(e) => { e.target.style.borderColor = '#3b82f6'; e.target.style.boxShadow = '0 0 0 2px rgba(59,130,246,0.2)'; }}
-              onBlur={(e) => { e.target.style.borderColor = 'var(--border-color)'; e.target.style.boxShadow = 'none'; }}
-            />
           </div>
-          
-          <div style={{ position: 'relative' }}>
-            <Lock size={20} color="var(--text-muted)" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
-            <input 
-              type="password" 
-              placeholder="Password"
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              style={{ boxSizing: 'border-box', width: '100%', padding: '0.875rem 1rem 0.875rem 3rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'rgba(0,0,0,0.2)', color: 'white', fontSize: '1rem', outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }}
-              onFocus={(e) => { e.target.style.borderColor = '#3b82f6'; e.target.style.boxShadow = '0 0 0 2px rgba(59,130,246,0.2)'; }}
-              onBlur={(e) => { e.target.style.borderColor = 'var(--border-color)'; e.target.style.boxShadow = 'none'; }}
-            />
+
+          <div>
+            <label htmlFor="password-input" style={{ display: 'block', fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>
+              Password
+            </label>
+            <div style={{ position: 'relative' }}>
+              <Lock size={16} color="var(--text-tertiary)" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+              <input
+                id="password-input"
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                className="filter-input"
+                style={{ width: '100%', paddingLeft: '36px' }}
+                required
+              />
+            </div>
           </div>
-          
-          <button type="submit" className="btn" style={{ width: '100%', justifyContent: 'center', marginTop: '0.5rem', padding: '0.875rem' }} disabled={isLoading}>
-            {isLoading ? 'Authenticating...' : 'Sign In securely'}
+
+          <button
+            type="submit"
+            className="btn"
+            style={{ width: '100%', justifyContent: 'center', marginTop: 'var(--space-2)' }}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Authenticating...' : 'Sign In'}
           </button>
         </form>
-        
-        <div style={{ marginTop: '2rem', color: '#64748b', fontSize: '0.875rem' }}>
-          Demo Credentials: <b>admin</b> / <b>admin123</b>
+
+        <div style={{ marginTop: 'var(--space-6)', padding: 'var(--space-3)', background: 'var(--bg-subtle)', border: '1px solid var(--border-panel)', borderRadius: 'var(--radius)', fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', textAlign: 'left' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-2)' }}>
+            <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Demo Access Credentials:</span>
+            <button
+              type="button"
+              onClick={() => {
+                setUsername('admin');
+                setPassword('SecureAdminPassword2026!');
+              }}
+              style={{ background: 'transparent', border: 'none', color: 'var(--accent-light)', cursor: 'pointer', fontSize: 'var(--text-sm)', textDecoration: 'underline', padding: 0 }}
+            >
+              Autofill
+            </button>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontFamily: 'var(--font-mono)' }}>
+            <div>Username: <strong style={{ color: 'var(--accent-light)' }}>admin</strong></div>
+            <div>Password: <strong style={{ color: 'var(--accent-light)' }}>SecureAdminPassword2026!</strong></div>
+          </div>
         </div>
       </div>
     </div>

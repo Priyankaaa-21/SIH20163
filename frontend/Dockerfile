@@ -9,6 +9,10 @@ RUN npm install
 # Copy frontend source code
 COPY . .
 
+# Run as non-root user
+RUN chown -R node:node /app
+USER node
+
 EXPOSE 5173
 
 # Start the Vite development server on all network interfaces

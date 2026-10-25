@@ -51,10 +51,10 @@ for i in range(1, 101):
     })
 
 data = {
-  "source": "IAEA DIIF - Database on Industrial Irradiation Facilities (Expanded Demo)",
+  "source": "SYNTHETIC demo data",
   "extracted": "2026-09-27",
   "totalFacilities": len(facilities),
-  "note": "Gamma irradiator facilities worldwide. Coordinates have been intentionally JITTERED (fuzzed) for security purposes.",
+  "note": "Gamma irradiator facilities worldwide. Coordinates are synthetic demo data fuzzed for security assessment demonstration.",
   "facilities": facilities
 }
 

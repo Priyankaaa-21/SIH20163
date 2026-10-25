@@ -1,15 +1,17 @@
 import os
 import sys
+import uuid
+import datetime
 
 # Add parent directory to path to allow importing from backend
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from backend.ingestion.dataset_ingestor import DatasetIngestor
 from backend.security.data_privacy import DataPrivacyCheck
-from backend.security.simulated_auth import SimulatedAuthCheck
-from backend.security.authorization import SimulatedAuthorizationCheck
+from backend.security.code_audit import CodeAuditCheck
 from backend.security.secret_scanner import SecretScannerCheck
 from backend.security.config_audit import ConfigurationAuditCheck
+from backend.security.dependency_audit import DependencyAuditCheck
 from backend.database import SessionLocal, engine
 from backend import models
 
@@ -29,11 +31,11 @@ def main():
     
     # 2. Run Security Checks
     checks = [
+        CodeAuditCheck(),
+        ConfigurationAuditCheck(),
         DataPrivacyCheck(),
-        SimulatedAuthCheck(),
-        SimulatedAuthorizationCheck(),
         SecretScannerCheck(),
-        ConfigurationAuditCheck()
+        DependencyAuditCheck()
     ]
     
     all_findings = []
@@ -41,18 +43,21 @@ def main():
         findings = check.run_check(dataset)
         all_findings.extend(findings)
         
-    print(f"Generated {len(all_findings)} findings.")
+    print(f"Generated {len(all_findings)} findings across {len(checks)} security modules.")
     
-    # 3. Save to Database
+    # 3. Save to Database with persistent scan run history
+    scan_run_id = f"scan_{datetime.datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
+    now = datetime.datetime.utcnow()
+    
     db = SessionLocal()
     try:
-        # Clear old findings for demo purposes
-        db.query(models.Evidence).delete()
-        db.query(models.Finding).delete()
-        db.commit()
-        
+        # We do NOT silently wipe existing findings; we preserve full audit history
+        saved_count = 0
         for finding_data in all_findings:
             evidence_data = finding_data.pop("evidence", [])
+            finding_data["scan_run_id"] = scan_run_id
+            finding_data["created_at"] = now
+            
             db_finding = models.Finding(**finding_data)
             db.add(db_finding)
             db.commit()
@@ -62,10 +67,13 @@ def main():
                 db_evidence = models.Evidence(**ev, finding_id=db_finding.id)
                 db.add(db_evidence)
             db.commit()
-        print("Successfully saved findings to the database.")
+            saved_count += 1
+            
+        print(f"Successfully recorded scan run '{scan_run_id}' with {saved_count} findings in the database.")
     except Exception as e:
         print(f"Error saving to database: {e}")
         db.rollback()
+        raise
     finally:
         db.close()
 

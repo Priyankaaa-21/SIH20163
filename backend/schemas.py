@@ -1,7 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
 from datetime import datetime
-import enum
 from .models import SeverityEnum, FindingStatusEnum
 
 class UserBase(BaseModel):
@@ -13,8 +12,7 @@ class UserCreate(UserBase):
 
 class UserResponse(UserBase):
     id: int
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class EvidenceBase(BaseModel):
     evidence_type: str
@@ -27,9 +25,7 @@ class EvidenceCreate(EvidenceBase):
 class Evidence(EvidenceBase):
     id: int
     finding_id: int
-    
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class FindingBase(BaseModel):
     title: str
@@ -37,11 +33,14 @@ class FindingBase(BaseModel):
     severity: SeverityEnum
     cvss: Optional[str] = None
     confidence: str
+    cwe: Optional[str] = None
+    owasp: Optional[str] = None
     affected_component: str
     description: str
     impact: str
     remediation: str
     status: FindingStatusEnum
+    scan_run_id: Optional[str] = None
 
 class FindingCreate(FindingBase):
     evidence: List[EvidenceCreate] = []
@@ -50,6 +49,13 @@ class Finding(FindingBase):
     id: int
     created_at: datetime
     evidence: List[Evidence] = []
-    
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
+
+class AuditLogResponse(BaseModel):
+    id: int
+    timestamp: datetime
+    action: str
+    username: Optional[str] = None
+    ip_address: Optional[str] = None
+    details: Optional[str] = None
+    model_config = ConfigDict(from_attributes=True)

@@ -14,8 +14,8 @@ services:
       - dbdata:/app/data
     env_file:
       - ./backend/.env
-    # We use a command override to enable auto-reload during development
-    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+    # Run scanner to populate dashboard on startup then start uvicorn with reload
+    command: sh -c "python -m backend.run_scan && uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload"
 
   frontend:
     build:

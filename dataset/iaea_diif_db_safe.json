@@ -1,8 +1,8 @@
 {
-  "source": "IAEA DIIF - Database on Industrial Irradiation Facilities (Expanded Demo)",
+  "source": "SYNTHETIC demo data",
   "extracted": "2026-09-27",
   "totalFacilities": 100,
-  "note": "Gamma irradiator facilities worldwide. Coordinates have been intentionally JITTERED (fuzzed) for security purposes.",
+  "note": "Gamma irradiator facilities worldwide. Coordinates are synthetic demo data fuzzed for security demonstration purposes.",
   "facilities": [
     {
       "id": "gi-001",
