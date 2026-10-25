@@ -20,7 +20,7 @@ const Login = ({ setAuthenticated }) => {
       await login(username, password);
       setAuthenticated(true);
     } catch (err) {
-      const detail = err.response?.data?.detail || 'Invalid username or password';
+      const detail = err.response?.data?.detail || err.message || 'Invalid username or password';
       setError(detail);
       setIsLoading(false);
     }
@@ -101,21 +101,36 @@ const Login = ({ setAuthenticated }) => {
 
         <div style={{ marginTop: 'var(--space-6)', padding: 'var(--space-3)', background: 'var(--bg-subtle)', border: '1px solid var(--border-panel)', borderRadius: 'var(--radius)', fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', textAlign: 'left' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-2)' }}>
-            <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Demo Access Credentials:</span>
-            <button
-              type="button"
-              onClick={() => {
-                setUsername('admin');
-                setPassword('SecureAdminPassword2026!');
-              }}
-              style={{ background: 'transparent', border: 'none', color: 'var(--accent-light)', cursor: 'pointer', fontSize: 'var(--text-sm)', textDecoration: 'underline', padding: 0 }}
-            >
-              Autofill
-            </button>
+            <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Access Credentials:</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                type="button"
+                id="autofill-admin123-btn"
+                onClick={() => {
+                  setUsername('admin');
+                  setPassword('admin123');
+                }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--accent-light)', cursor: 'pointer', fontSize: 'var(--text-sm)', textDecoration: 'underline', padding: 0 }}
+              >
+                Autofill (admin123)
+              </button>
+              <span style={{ color: 'var(--text-tertiary)' }}>•</span>
+              <button
+                type="button"
+                id="autofill-secure-btn"
+                onClick={() => {
+                  setUsername('admin');
+                  setPassword('SecureAdminPassword2026!');
+                }}
+                style={{ background: 'transparent', border: 'none', color: 'var(--accent-light)', cursor: 'pointer', fontSize: 'var(--text-sm)', textDecoration: 'underline', padding: 0 }}
+              >
+                Autofill (New)
+              </button>
+            </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontFamily: 'var(--font-mono)' }}>
             <div>Username: <strong style={{ color: 'var(--accent-light)' }}>admin</strong></div>
-            <div>Password: <strong style={{ color: 'var(--accent-light)' }}>SecureAdminPassword2026!</strong></div>
+            <div>Password: <strong style={{ color: 'var(--accent-light)' }}>admin123</strong> <span style={{ color: 'var(--text-tertiary)' }}>(or SecureAdminPassword2026!)</span></div>
           </div>
         </div>
       </div>
