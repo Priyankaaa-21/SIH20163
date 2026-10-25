@@ -7,3 +7,6 @@ frontend/dist/
 .git
 .pytest_cache
 backend/.env
+dataset/iaea_diif_db.json
+dataset/iaea_diif_facilities.json
+dataset/iaea_diif_tableau.json

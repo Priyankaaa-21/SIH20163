@@ -5,7 +5,11 @@ from .database import SessionLocal
 from . import models
 
 def generate_markdown_report(db: Session, output_path: str):
-    findings = db.query(models.Finding).order_by(models.Finding.id.asc()).all()
+    latest_scan_id = db.query(models.Finding.scan_run_id).order_by(models.Finding.id.desc()).first()
+    if latest_scan_id and latest_scan_id[0]:
+        findings = db.query(models.Finding).filter(models.Finding.scan_run_id == latest_scan_id[0]).order_by(models.Finding.id.asc()).all()
+    else:
+        findings = db.query(models.Finding).order_by(models.Finding.id.asc()).all()
     
     total_findings = len(findings)
     critical_count = len([f for f in findings if f.severity == 'Critical'])
