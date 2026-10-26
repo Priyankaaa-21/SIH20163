@@ -1,6 +1,6 @@
 # World Monitor Security Assessment Platform (SIH 26163)
 
-[![Security CI](https://github.com/Priyankaa-21/SIH20163/actions/workflows/security_ci.yml/badge.svg)](https://github.com/Priyankaa-21/SIH20163/actions/workflows/security_ci.yml)
+
 
 An authenticated platform for running, tracking and presenting a security assessment of the World Monitor application. It runs automated checks, stores findings with evidence, proves each fix with a before/after test, and shows everything in a dashboard.
 
