@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getFindings } from '../api';
+import { getFindings, downloadReportMarkdown, downloadReportHtml } from '../api';
 import { 
   ShieldAlert, 
   CheckCircle, 
@@ -292,9 +292,15 @@ const Dashboard = () => {
           </div>
         )}
 
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-2)' }}>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
           <button onClick={handleResetFilters} className="btn btn-secondary" title="Reset all filters">
             <RotateCcw size={14} /> Reset
+          </button>
+          <button onClick={downloadReportMarkdown} className="btn btn-secondary" title="Download SECURITY_REPORT.md generated from database">
+            <Download size={14} /> Report (MD)
+          </button>
+          <button onClick={downloadReportHtml} className="btn btn-secondary" title="Download styled report.html generated from database">
+            <Download size={14} /> Report (HTML)
           </button>
           <button onClick={handleExportJSON} className="btn btn-secondary" title="Export findings as JSON">
             <Download size={14} /> JSON
@@ -356,9 +362,10 @@ const Dashboard = () => {
                           Severity <ArrowUpDown size={12} />
                         </span>
                       </th>
+                      <th>Confidence</th>
                       <th className="sortable" onClick={() => handleSort('status')}>
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                          Status <ArrowUpDown size={12} />
+                          Lifecycle / Status <ArrowUpDown size={12} />
                         </span>
                       </th>
                       <th>Taxonomy (CWE / OWASP)</th>
@@ -383,7 +390,30 @@ const Dashboard = () => {
                           {getSeverityPill(f.severity)}
                         </td>
                         <td>
-                          {getStatusPill(f.status)}
+                          <span style={{
+                            fontSize: '11px',
+                            fontWeight: 600,
+                            padding: '2px 6px',
+                            borderRadius: '4px',
+                            background: f.confidence === 'High' ? 'rgba(56, 189, 248, 0.15)' : 'rgba(234, 179, 8, 0.15)',
+                            color: f.confidence === 'High' ? '#38bdf8' : '#facc15',
+                            border: `1px solid ${f.confidence === 'High' ? 'rgba(56, 189, 248, 0.3)' : 'rgba(234, 179, 8, 0.3)'}`
+                          }}>
+                            {f.confidence || 'High'}
+                          </span>
+                        </td>
+                        <td>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                            <span style={{ 
+                              fontSize: '10px', 
+                              fontWeight: 700, 
+                              color: f.lifecycle === 'RETESTED' ? '#c084fc' : (f.lifecycle === 'REMEDIATED' ? '#34d399' : '#94a3b8'),
+                              letterSpacing: '0.5px'
+                            }}>
+                              {f.lifecycle || (f.status === 'Remediated' ? 'RETESTED' : 'CONFIRMED')}
+                            </span>
+                            {getStatusPill(f.status)}
+                          </div>
                         </td>
                         <td>
                           {f.cwe && <span className="tag-meta">{f.cwe.split(':')[0]}</span>}

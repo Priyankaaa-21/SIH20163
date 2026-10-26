@@ -18,6 +18,13 @@ class FindingStatusEnum(str, enum.Enum):
     confirmed = "Confirmed"
     remediated = "Remediated"
 
+class FindingLifecycleEnum(str, enum.Enum):
+    DISCOVERED = "DISCOVERED"
+    VALIDATED = "VALIDATED"
+    CONFIRMED = "CONFIRMED"
+    REMEDIATED = "REMEDIATED"
+    RETESTED = "RETESTED"
+
 class User(Base):
     __tablename__ = "users"
 
@@ -37,6 +44,8 @@ class Finding(Base):
     category = Column(String, index=True)
     severity = Column(String)  # Critical, High, Medium, Low, Informational
     cvss = Column(String)
+    cvss_primary = Column(String, nullable=True)
+    cvss_conservative = Column(String, nullable=True)
     confidence = Column(String)
     cwe = Column(String, nullable=True)
     owasp = Column(String, nullable=True)
@@ -45,6 +54,8 @@ class Finding(Base):
     impact = Column(Text)
     remediation = Column(Text)
     status = Column(String, default=FindingStatusEnum.detected)
+    lifecycle = Column(String, default=FindingLifecycleEnum.DISCOVERED)
+    lifecycle_history = Column(Text, default="[]")
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     
     evidence = relationship("Evidence", back_populates="finding", cascade="all, delete")
@@ -57,8 +68,24 @@ class Evidence(Base):
     evidence_type = Column(String)
     description = Column(Text)
     raw_data = Column(Text)
+    collected_at = Column(DateTime, default=datetime.datetime.utcnow)
+    environment = Column(String, default="local-assessment")
+    sha256 = Column(String, nullable=True)
     
     finding = relationship("Finding", back_populates="evidence")
+
+class AttackSurface(Base):
+    __tablename__ = "attack_surfaces"
+
+    id = Column(Integer, primary_key=True, index=True)
+    scan_path = Column(String)
+    total_routes = Column(Integer, default=0)
+    flagged_routes_count = Column(Integer, default=0)
+    services_count = Column(Integer, default=0)
+    configs_count = Column(Integer, default=0)
+    inventory_json = Column(Text, default="{}")
+    flagged_routes_json = Column(Text, default="[]")
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
 class AuditLog(Base):
     __tablename__ = "audit_logs"

@@ -8,7 +8,7 @@ on:
 
 jobs:
   backend-tests-and-audit:
-    name: Backend Pytest & pip-audit
+    name: Backend Pytest, PoC Suite & pip-audit
     runs-on: ubuntu-latest
 
     steps:
@@ -37,12 +37,46 @@ jobs:
         run: |
           pytest tests/ -v
 
+      - name: Run Before/After PoC Verification Suite
+        env:
+          SECRET_KEY: "ci-test-secret-key-32-chars-long-here"
+          ALGORITHM: "HS256"
+          ADMIN_PASSWORD: "CiTestStrongPassword2026!"
+          FRONTEND_URL: "http://localhost:5173"
+          PYTHONPATH: "."
+        run: |
+          python -m backend.poc.run_all
+
+      - name: Run Attack Surface Review
+        env:
+          SECRET_KEY: "ci-test-secret-key-32-chars-long-here"
+          ALGORITHM: "HS256"
+          ADMIN_PASSWORD: "CiTestStrongPassword2026!"
+          PYTHONPATH: "."
+        run: |
+          python -m backend.targets.worldmonitor_review --path .
+
+      - name: Regenerate Security Reports from Database
+        env:
+          PYTHONPATH: "."
+        run: |
+          python -m backend.report_generator
+
+      - name: Upload Security Reports as Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-assessment-reports
+          path: |
+            SECURITY_REPORT.md
+            report.html
+          retention-days: 30
+
       - name: Run pip-audit Vulnerability Scan
         run: |
           pip-audit -r backend/requirements.txt --desc || echo "pip-audit completed with findings"
 
   frontend-audit:
-    name: Frontend npm audit
+    name: Frontend npm audit & build
     runs-on: ubuntu-latest
 
     steps:
@@ -60,6 +94,11 @@ jobs:
         working-directory: ./frontend
         run: |
           npm ci
+
+      - name: Build Frontend Application
+        working-directory: ./frontend
+        run: |
+          npm run build
 
       - name: Run npm audit
         working-directory: ./frontend

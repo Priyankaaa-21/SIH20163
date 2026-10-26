@@ -83,3 +83,37 @@ def format_cvss(vector: str) -> str:
     clean_vec = vector.strip().split()[0]
     score = cvss_score(clean_vec)
     return f"{clean_vec} ({score:.1f})"
+
+def compute_dual_cvss(primary_vector: str, conservative_vector: str = None) -> dict:
+    """
+    Computes both cvss_primary and cvss_conservative vectors and their scores
+    using the cvss_score helper.
+    """
+    prim_clean = primary_vector.strip().split()[0]
+    prim_score = cvss_score(prim_clean)
+    prim_str = f"{prim_clean} ({prim_score:.1f})"
+
+    if not conservative_vector:
+        # Construct conservative worst-case vector by elevating Scope to Changed,
+        # or elevating impact if low/none.
+        cons_clean = prim_clean
+        if "/S:U" in cons_clean:
+            cons_clean = cons_clean.replace("/S:U", "/S:C")
+        elif "/C:L" in cons_clean:
+            cons_clean = cons_clean.replace("/C:L", "/C:H")
+        elif "/I:L" in cons_clean:
+            cons_clean = cons_clean.replace("/I:L", "/I:H")
+        elif "/A:N" in cons_clean:
+            cons_clean = cons_clean.replace("/A:N", "/A:L")
+    else:
+        cons_clean = conservative_vector.strip().split()[0]
+
+    cons_score = cvss_score(cons_clean)
+    cons_str = f"{cons_clean} ({cons_score:.1f})"
+
+    return {
+        "cvss_primary": prim_str,
+        "cvss_conservative": cons_str,
+        "primary_score": prim_score,
+        "conservative_score": cons_score
+    }

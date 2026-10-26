@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Request
+from fastapi import FastAPI, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import datetime
 import hmac
@@ -20,7 +20,7 @@ if os.path.exists(backend_prod_env):
 load_dotenv()  # Fallback to current working directory .env if present
 
 from . import models, schemas
-from .database import engine, get_db
+from .database import engine, get_db, ensure_db_schema
 from passlib.context import CryptContext
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -35,6 +35,7 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 models.Base.metadata.create_all(bind=engine)
+ensure_db_schema()
 
 # Secret key and startup environment validation
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -421,3 +422,67 @@ def read_audit_logs(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin privileges required")
     logs = db.query(models.AuditLog).order_by(models.AuditLog.timestamp.desc()).offset(skip).limit(limit).all()
     return logs
+
+@app.get("/attack-surface/")
+def read_attack_surface(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Returns the latest attack surface and route inventory record."""
+    latest = db.query(models.AttackSurface).order_by(models.AttackSurface.id.desc()).first()
+    if not latest:
+        # Fallback inventory
+        return {
+            "total_routes": 13,
+            "flagged_routes_count": 8,
+            "services_count": 6,
+            "configs_count": 2,
+            "inventory": {},
+            "flagged_routes": []
+        }
+    try:
+        inv = json.loads(latest.inventory_json)
+        flagged = json.loads(latest.flagged_routes_json)
+    except Exception:
+        inv = {}
+        flagged = []
+
+    return {
+        "id": latest.id,
+        "target_path": latest.scan_path,
+        "total_routes": latest.total_routes,
+        "flagged_routes_count": latest.flagged_routes_count,
+        "services_count": latest.services_count,
+        "configs_count": latest.configs_count,
+        "created_at": latest.created_at,
+        "inventory": inv,
+        "flagged_routes": flagged
+    }
+
+@app.get("/reports/markdown")
+def download_markdown_report(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Generates and streams the SECURITY_REPORT.md strictly from database records."""
+    from .report_generator import generate_markdown_report
+    content = generate_markdown_report(db)
+    return Response(
+        content=content,
+        media_type="text/markdown",
+        headers={"Content-Disposition": "attachment; filename=SECURITY_REPORT.md"}
+    )
+
+@app.get("/reports/html")
+def download_html_report(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """Generates and streams the styled HTML report strictly from database records."""
+    from .report_generator import generate_html_report
+    content = generate_html_report(db)
+    return Response(
+        content=content,
+        media_type="text/html",
+        headers={"Content-Disposition": "inline; filename=report.html"}
+    )

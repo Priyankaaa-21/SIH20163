@@ -12,11 +12,12 @@ from backend.security.code_audit import CodeAuditCheck
 from backend.security.secret_scanner import SecretScannerCheck
 from backend.security.config_audit import ConfigurationAuditCheck
 from backend.security.dependency_audit import DependencyAuditCheck
-from backend.database import SessionLocal, engine
+from backend.database import SessionLocal, engine, ensure_db_schema
 from backend import models
 
-# Ensure tables exist
+# Ensure tables exist and schema columns are up to date
 models.Base.metadata.create_all(bind=engine)
+ensure_db_schema()
 
 def main():
     print("Starting SIH 26163 Security Assessment Scan...")

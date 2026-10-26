@@ -6,6 +6,8 @@
     "category": "Authentication",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-613: Insufficient Session Expiration",
     "owasp": "API2:2023 Broken Authentication",
@@ -14,6 +16,8 @@
     "impact": "If tokens do not require an expiration claim, an attacker holding a valid token can maintain persistent access indefinitely.",
     "remediation": "Configure jwt.decode with options={'require': ['exp']} to mandate token expiration timestamps.",
     "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T20:57:17.149601",
     "evidence": [
       {
@@ -21,14 +25,20 @@
         "finding_id": 1,
         "evidence_type": "Source Code Audit (Before - Insecure)",
         "description": "Token decoded without requiring expiration claim.",
-        "raw_data": "jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # Insecure: missing options={'require': ['exp']}"
+        "raw_data": "jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # Insecure: missing options={'require': ['exp']}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 2,
         "finding_id": 1,
         "evidence_type": "Source Code Audit (After - Remediated)",
         "description": "Current implementation in backend/main.py.",
-        "raw_data": "payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options={\"require\": [\"exp\"]})"
+        "raw_data": "payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options={\"require\": [\"exp\"]})",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -39,6 +49,8 @@
     "category": "Authorization",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H (8.8)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H (8.8)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-285: Improper Authorization",
     "owasp": "API5:2023 Broken Function Level Authorization",
@@ -47,6 +59,8 @@
     "impact": "Unprivileged users could submit unauthorized findings or register new users without administrative oversight.",
     "remediation": "Verify the authenticated user's role equals 'admin' before executing state modifications on all POST routes.",
     "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T20:57:17.149601",
     "evidence": [
       {
@@ -54,14 +68,20 @@
         "finding_id": 2,
         "evidence_type": "Source Code Audit (Before - Insecure)",
         "description": "POST endpoint without role verification.",
-        "raw_data": "@app.post('/users/')\ndef create_user(user: schemas.UserCreate):\n    # Missing admin check: any user could register accounts"
+        "raw_data": "@app.post('/users/')\ndef create_user(user: schemas.UserCreate):\n    # Missing admin check: any user could register accounts",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 4,
         "finding_id": 2,
         "evidence_type": "Source Code Audit (After - Remediated)",
         "description": "Verified POST routes: ['/users/', '/findings/']. Unprotected: []",
-        "raw_data": "if current_user.get('role') != 'admin':\n    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Admin privileges required')"
+        "raw_data": "if current_user.get('role') != 'admin':\n    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Admin privileges required')",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -72,6 +92,8 @@
     "category": "API Security",
     "severity": "Medium",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N (5.4)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N (5.4)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-942: Permissive Cross-domain Policy with Untrusted Domains",
     "owasp": "API8:2023 Security Misconfiguration",
@@ -80,6 +102,8 @@
     "impact": "Permissive CORS policies can allow untrusted web applications to perform unintended HTTP methods and supply sensitive custom headers.",
     "remediation": "Restrict allow_methods to explicitly needed verbs (GET, POST, OPTIONS) and allow_headers to standard required headers.",
     "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T20:57:17.149601",
     "evidence": [
       {
@@ -87,14 +111,20 @@
         "finding_id": 3,
         "evidence_type": "Source Code Audit (Before - Insecure)",
         "description": "Wildcard CORS configuration.",
-        "raw_data": "allow_methods=[\"*\"], allow_headers=[\"*\"]"
+        "raw_data": "allow_methods=[\"*\"], allow_headers=[\"*\"]",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 6,
         "finding_id": 3,
         "evidence_type": "Source Code Audit (After - Remediated)",
         "description": "Strictly narrowed CORS allow_methods and allow_headers.",
-        "raw_data": "allow_methods=[\"GET\", \"POST\", \"OPTIONS\"],\nallow_headers=[\"Authorization\", \"Content-Type\", \"Accept\", \"Origin\", \"X-Requested-With\"]"
+        "raw_data": "allow_methods=[\"GET\", \"POST\", \"OPTIONS\"],\nallow_headers=[\"Authorization\", \"Content-Type\", \"Accept\", \"Origin\", \"X-Requested-With\"]",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -105,6 +135,8 @@
     "category": "Authentication",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-259: Use of Hard-coded Password",
     "owasp": "API2:2023 Broken Authentication",
@@ -113,6 +145,8 @@
     "impact": "Default credentials allow unauthorized users to gain immediate administrative control over the security assessment platform.",
     "remediation": "Refuse to start the server if ADMIN_PASSWORD is unset or equals the known default 'admin123'. Mandate strong password configuration via environment variables.",
     "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T20:57:17.149601",
     "evidence": [
       {
@@ -120,14 +154,20 @@
         "finding_id": 4,
         "evidence_type": "Source Code Audit (Before - Insecure)",
         "description": "Hardcoded default fallback in code.",
-        "raw_data": "admin_pw = os.getenv(\"ADMIN_PASSWORD\", \"admin123\") # Insecure default fallback"
+        "raw_data": "admin_pw = os.getenv(\"ADMIN_PASSWORD\", \"admin123\") # Insecure default fallback",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 8,
         "finding_id": 4,
         "evidence_type": "Source Code Audit (After - Remediated)",
         "description": "Strict check requiring explicit non-default ADMIN_PASSWORD.",
-        "raw_data": "ADMIN_PASSWORD = os.getenv(\"ADMIN_PASSWORD\")\nif not ADMIN_PASSWORD or ADMIN_PASSWORD == \"admin123\":\n    raise RuntimeError(\"ADMIN_PASSWORD unset or using insecure default. Refusing to start.\")"
+        "raw_data": "ADMIN_PASSWORD = os.getenv(\"ADMIN_PASSWORD\")\nif not ADMIN_PASSWORD or ADMIN_PASSWORD == \"admin123\":\n    raise RuntimeError(\"ADMIN_PASSWORD unset or using insecure default. Refusing to start.\")",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -138,6 +178,8 @@
     "category": "Authorization",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N (8.2)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N (8.2)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-862: Missing Authorization",
     "owasp": "API5:2023 Broken Function Level Authorization",
@@ -146,6 +188,8 @@
     "impact": "Unrestricted registration exposes internal endpoints and increases the attack surface for credential stuffing and privilege escalation.",
     "remediation": "Restrict POST /users/ so only authenticated users with the 'admin' role can create accounts.",
     "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T20:57:17.149601",
     "evidence": [
       {
@@ -153,14 +197,20 @@
         "finding_id": 5,
         "evidence_type": "Source Code Audit (Before - Insecure)",
         "description": "Open registration route without authorization.",
-        "raw_data": "@app.post(\"/users/\")\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):\n    # Insecure: Any client could register accounts"
+        "raw_data": "@app.post(\"/users/\")\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):\n    # Insecure: Any client could register accounts",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 10,
         "finding_id": 5,
         "evidence_type": "Source Code Audit (After - Remediated)",
         "description": "Restricted to authenticated admin users only.",
-        "raw_data": "@app.post(\"/users/\", response_model=schemas.UserResponse)\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):\n    if current_user.get(\"role\") != \"admin\":\n        raise HTTPException(status_code=403, detail=\"Admin privileges required\")"
+        "raw_data": "@app.post(\"/users/\", response_model=schemas.UserResponse)\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):\n    if current_user.get(\"role\") != \"admin\":\n        raise HTTPException(status_code=403, detail=\"Admin privileges required\")",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -171,6 +221,8 @@
     "category": "Configuration / Trust",
     "severity": "Medium",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N (5.3)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N (5.3)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-345: Insufficient Verification of Data Authenticity",
     "owasp": "API8:2023 Security Misconfiguration",
@@ -179,6 +231,8 @@
     "impact": "An attacker could claim a dropped or renamed handle and inject disinformation directly into Tier-1 intelligence feeds, triggering false incident alerts.",
     "remediation": "Enforce strict schema validation on configuration files. Require all Tier-1 enabled feeds to contain verified numeric 'accountId' values validated against the provider API.",
     "status": "Confirmed",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T20:57:17.149601",
     "evidence": [
       {
@@ -186,56 +240,80 @@
         "finding_id": 6,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @SaudiDCD (index 0) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"SaudiDCD\",\n  \"label\": \"Saudi Civil Defense\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"saudi-arabia\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"SaudiDCD\",\n  \"label\": \"Saudi Civil Defense\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"saudi-arabia\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 12,
         "finding_id": 6,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @InaTEWS_BMKG (index 1) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"InaTEWS_BMKG\",\n  \"label\": \"BMKG InaTEWS\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"indonesia\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"InaTEWS_BMKG\",\n  \"label\": \"BMKG InaTEWS\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"indonesia\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 13,
         "finding_id": 6,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @dsns_telegram (index 2) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"dsns_telegram\",\n  \"label\": \"Ukraine State Emergency Service\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"ukraine\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"dsns_telegram\",\n  \"label\": \"Ukraine State Emergency Service\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"ukraine\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 14,
         "finding_id": 6,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @PikudHaOref_all (index 3) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"PikudHaOref_all\",\n  \"label\": \"Israel Home Front Command\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"israel\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"PikudHaOref_all\",\n  \"label\": \"Israel Home Front Command\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"israel\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 15,
         "finding_id": 6,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @govsg (index 5) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"govsg\",\n  \"label\": \"Singapore Government\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"singapore\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"govsg\",\n  \"label\": \"Singapore Government\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"singapore\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 16,
         "finding_id": 6,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @VahidOnline (index 7) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"VahidOnline\",\n  \"label\": \"Vahid Online\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"iran\",\n  \"maxMessages\": 20\n}"
+        "raw_data": "{\n  \"handle\": \"VahidOnline\",\n  \"label\": \"Vahid Online\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"iran\",\n  \"maxMessages\": 20\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 17,
         "finding_id": 6,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @IDFofficial (index 44) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"IDFofficial\",\n  \"label\": \"IDF Official\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"IDFofficial\",\n  \"label\": \"IDF Official\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 18,
         "finding_id": 6,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @RocketAlert (index 45) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"RocketAlert\",\n  \"label\": \"Rocket Alert\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"RocketAlert\",\n  \"label\": \"Rocket Alert\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -246,6 +324,8 @@
     "category": "Data Privacy / Storage",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-200: Exposure of Sensitive Information to an Unauthorized Actor",
     "owasp": "API3:2023 Broken Object Property Level Authorization",
@@ -254,6 +334,8 @@
     "impact": "Unrestricted access to exact facility coordinates could allow malicious actors to locate and target radiological facilities.",
     "remediation": "Implement role-based precision masking on coordinates. Round coordinates to a coarse grid (0.5 degrees) with deterministic noise for standard users, and restrict precise coordinates to authorized admins.",
     "status": "Confirmed",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T20:57:17.149601",
     "evidence": [
       {
@@ -261,70 +343,100 @@
         "finding_id": 7,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-001, Location: Barakah (Region), UAE exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-001\",\n  \"city\": \"Barakah (Region)\",\n  \"country\": \"UAE\",\n  \"lat\": 24.9802,\n  \"lon\": 53.6436\n}"
+        "raw_data": "{\n  \"id\": \"gi-001\",\n  \"city\": \"Barakah (Region)\",\n  \"country\": \"UAE\",\n  \"lat\": 24.9802,\n  \"lon\": 53.6436\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 20,
         "finding_id": 7,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-002, Location: Rovno (Region), Ukraine exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-002\",\n  \"city\": \"Rovno (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 51.9153,\n  \"lon\": 24.8494\n}"
+        "raw_data": "{\n  \"id\": \"gi-002\",\n  \"city\": \"Rovno (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 51.9153,\n  \"lon\": 24.8494\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 21,
         "finding_id": 7,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-003, Location: Richland (Region), USA exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-003\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 47.0989,\n  \"lon\": -118.1517\n}"
+        "raw_data": "{\n  \"id\": \"gi-003\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 47.0989,\n  \"lon\": -118.1517\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 22,
         "finding_id": 7,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-004, Location: Richland (Region), USA exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-004\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 45.9452,\n  \"lon\": -119.0939\n}"
+        "raw_data": "{\n  \"id\": \"gi-004\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 45.9452,\n  \"lon\": -119.0939\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 23,
         "finding_id": 7,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-005, Location: Novovoronezh (Region), Russia exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-005\",\n  \"city\": \"Novovoronezh (Region)\",\n  \"country\": \"Russia\",\n  \"lat\": 50.9362,\n  \"lon\": 37.7145\n}"
+        "raw_data": "{\n  \"id\": \"gi-005\",\n  \"city\": \"Novovoronezh (Region)\",\n  \"country\": \"Russia\",\n  \"lat\": 50.9362,\n  \"lon\": 37.7145\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 24,
         "finding_id": 7,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-006, Location: Fukushima (Region), Japan exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-006\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 36.8094,\n  \"lon\": 142.1962\n}"
+        "raw_data": "{\n  \"id\": \"gi-006\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 36.8094,\n  \"lon\": 142.1962\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 25,
         "finding_id": 7,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-007, Location: Bucha (Region), Ukraine exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-007\",\n  \"city\": \"Bucha (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 50.3937,\n  \"lon\": 30.2397\n}"
+        "raw_data": "{\n  \"id\": \"gi-007\",\n  \"city\": \"Bucha (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 50.3937,\n  \"lon\": 30.2397\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 26,
         "finding_id": 7,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-008, Location: Doel (Region), Belgium exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-008\",\n  \"city\": \"Doel (Region)\",\n  \"country\": \"Belgium\",\n  \"lat\": 50.8171,\n  \"lon\": 4.1403\n}"
+        "raw_data": "{\n  \"id\": \"gi-008\",\n  \"city\": \"Doel (Region)\",\n  \"country\": \"Belgium\",\n  \"lat\": 50.8171,\n  \"lon\": 4.1403\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 27,
         "finding_id": 7,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-009, Location: Fukushima (Region), Japan exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-009\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 38.7176,\n  \"lon\": 141.8825\n}"
+        "raw_data": "{\n  \"id\": \"gi-009\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 38.7176,\n  \"lon\": 141.8825\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 28,
         "finding_id": 7,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-010, Location: Bruce (Region), Canada exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-010\",\n  \"city\": \"Bruce (Region)\",\n  \"country\": \"Canada\",\n  \"lat\": 44.1078,\n  \"lon\": -82.0374\n}"
+        "raw_data": "{\n  \"id\": \"gi-010\",\n  \"city\": \"Bruce (Region)\",\n  \"country\": \"Canada\",\n  \"lat\": 44.1078,\n  \"lon\": -82.0374\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -335,6 +447,8 @@
     "category": "Data Privacy / Storage",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-552: Files or Directories Accessible to External Parties",
     "owasp": "API8:2023 Security Misconfiguration",
@@ -343,6 +457,8 @@
     "impact": "Any files copied into the Docker container image during build (COPY dataset/ dataset/) can be extracted from public container registries or compromised containers.",
     "remediation": "Move raw unmasked dataset files to a gitignored 'private/' directory excluded via .dockerignore and .gitignore. Only include synthetic or fuzzed datasets (iaea_diif_db_safe.json) in the container image.",
     "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T20:57:17.149601",
     "evidence": [
       {
@@ -350,14 +466,20 @@
         "finding_id": 8,
         "evidence_type": "Docker Context Audit (Before - Insecure)",
         "description": "Raw unmasked datasets located in build context.",
-        "raw_data": "dataset/iaea_diif_db.json\ndataset/iaea_diif_facilities.json\ndataset/iaea_diif_tableau.json"
+        "raw_data": "dataset/iaea_diif_db.json\ndataset/iaea_diif_facilities.json\ndataset/iaea_diif_tableau.json",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 30,
         "finding_id": 8,
         "evidence_type": "Docker Context Audit (After - Remediated)",
         "description": "Raw files successfully moved to private/ directory and excluded from build context via .dockerignore.",
-        "raw_data": "Isolated in private/ directory (gitignored): True\nExcluded from Docker context via backend/.dockerignore"
+        "raw_data": "Isolated in private/ directory (gitignored): True\nExcluded from Docker context via backend/.dockerignore",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -368,6 +490,8 @@
     "category": "Dependency Management",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L (7.3)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L (7.3)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-1395: Dependency on Vulnerable Third-Party Component",
     "owasp": "API10:2023 Unsafe Consumption of APIs",
@@ -376,6 +500,8 @@
     "impact": "Exploitation of vulnerable packages during development or production build can lead to XSS, DoS, or credential exposure.",
     "remediation": "Update vulnerable dependencies using 'npm audit fix' and keep library versions pinned to secure releases.",
     "status": "Confirmed",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T20:57:17.149601",
     "evidence": [
       {
@@ -383,21 +509,30 @@
         "finding_id": 9,
         "evidence_type": "npm audit vulnerability",
         "description": "Vulnerable package: follow-redirects (Severity: high)",
-        "raw_data": "{\n  \"package\": \"follow-redirects\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"follow-redirects array-form headers bypass cross-origin credential stripping\",\n    \"follow-redirects sensitiveHeaders regex escaping can expose credential headers\"\n  ],\n  \"range\": \"1.16.0\"\n}"
+        "raw_data": "{\n  \"package\": \"follow-redirects\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"follow-redirects array-form headers bypass cross-origin credential stripping\",\n    \"follow-redirects sensitiveHeaders regex escaping can expose credential headers\"\n  ],\n  \"range\": \"1.16.0\"\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 32,
         "finding_id": 9,
         "evidence_type": "npm audit vulnerability",
         "description": "Vulnerable package: source-map-js (Severity: high)",
-        "raw_data": "{\n  \"package\": \"source-map-js\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"source-map-js allows event-loop denial of service through indexed source-map section offsets\"\n  ],\n  \"range\": \"1.0.0 - 1.2.1\"\n}"
+        "raw_data": "{\n  \"package\": \"source-map-js\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"source-map-js allows event-loop denial of service through indexed source-map section offsets\"\n  ],\n  \"range\": \"1.0.0 - 1.2.1\"\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 33,
         "finding_id": 9,
         "evidence_type": "npm audit vulnerability",
         "description": "Vulnerable package: vite (Severity: high)",
-        "raw_data": "{\n  \"package\": \"vite\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"launch-editor: escapeCmdArgs() omits % escaping on Windows\",\n    \"launch-editor: Editor CLI flag misinterpretation causing arbitrary command execution for some editors\",\n    \"launch-editor: `fs.existsSync()` existence check can be bypassed on Windows\",\n    \"Vite: Cross origin script execution through Vite custom middleware\",\n    \"Vite: Files outside `server.fs.allow` could be served when project paths match system paths on non-Windows machine\",\n    \"Vite: First 4 bytes of files outside of `server.fs` setting is exposed by `?vite-wasm-instance`\"\n  ],\n  \"range\": \"8.3.0 - 8.3.2\"\n}"
+        "raw_data": "{\n  \"package\": \"vite\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"launch-editor: escapeCmdArgs() omits % escaping on Windows\",\n    \"launch-editor: Editor CLI flag misinterpretation causing arbitrary command execution for some editors\",\n    \"launch-editor: `fs.existsSync()` existence check can be bypassed on Windows\",\n    \"Vite: Cross origin script execution through Vite custom middleware\",\n    \"Vite: Files outside `server.fs.allow` could be served when project paths match system paths on non-Windows machine\",\n    \"Vite: First 4 bytes of files outside of `server.fs` setting is exposed by `?vite-wasm-instance`\"\n  ],\n  \"range\": \"8.3.0 - 8.3.2\"\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -408,6 +543,8 @@
     "category": "Authentication",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-613: Insufficient Session Expiration",
     "owasp": "API2:2023 Broken Authentication",
@@ -416,6 +553,8 @@
     "impact": "If tokens do not require an expiration claim, an attacker holding a valid token can maintain persistent access indefinitely.",
     "remediation": "Configure jwt.decode with options={'require': ['exp']} to mandate token expiration timestamps.",
     "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T21:13:34.430942",
     "evidence": [
       {
@@ -423,14 +562,20 @@
         "finding_id": 10,
         "evidence_type": "Source Code Audit (Before - Insecure)",
         "description": "Token decoded without requiring expiration claim.",
-        "raw_data": "jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # Insecure: missing options={'require': ['exp']}"
+        "raw_data": "jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # Insecure: missing options={'require': ['exp']}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 35,
         "finding_id": 10,
         "evidence_type": "Source Code Audit (After - Remediated)",
         "description": "Current implementation in backend/main.py.",
-        "raw_data": "payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options={\"require\": [\"exp\"]})"
+        "raw_data": "payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options={\"require\": [\"exp\"]})",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -441,6 +586,8 @@
     "category": "Authorization",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H (8.8)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H (8.8)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-285: Improper Authorization",
     "owasp": "API5:2023 Broken Function Level Authorization",
@@ -449,6 +596,8 @@
     "impact": "Unprivileged users could submit unauthorized findings or register new users without administrative oversight.",
     "remediation": "Verify the authenticated user's role equals 'admin' before executing state modifications on all POST routes.",
     "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T21:13:34.430942",
     "evidence": [
       {
@@ -456,14 +605,20 @@
         "finding_id": 11,
         "evidence_type": "Source Code Audit (Before - Insecure)",
         "description": "POST endpoint without role verification.",
-        "raw_data": "@app.post('/users/')\ndef create_user(user: schemas.UserCreate):\n    # Missing admin check: any user could register accounts"
+        "raw_data": "@app.post('/users/')\ndef create_user(user: schemas.UserCreate):\n    # Missing admin check: any user could register accounts",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 37,
         "finding_id": 11,
         "evidence_type": "Source Code Audit (After - Remediated)",
         "description": "Verified POST routes: ['/users/', '/findings/']. Unprotected: []",
-        "raw_data": "if current_user.get('role') != 'admin':\n    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Admin privileges required')"
+        "raw_data": "if current_user.get('role') != 'admin':\n    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Admin privileges required')",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -474,6 +629,8 @@
     "category": "API Security",
     "severity": "Medium",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N (5.4)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N (5.4)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-942: Permissive Cross-domain Policy with Untrusted Domains",
     "owasp": "API8:2023 Security Misconfiguration",
@@ -482,6 +639,8 @@
     "impact": "Permissive CORS policies can allow untrusted web applications to perform unintended HTTP methods and supply sensitive custom headers.",
     "remediation": "Restrict allow_methods to explicitly needed verbs (GET, POST, OPTIONS) and allow_headers to standard required headers.",
     "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T21:13:34.430942",
     "evidence": [
       {
@@ -489,14 +648,20 @@
         "finding_id": 12,
         "evidence_type": "Source Code Audit (Before - Insecure)",
         "description": "Wildcard CORS configuration.",
-        "raw_data": "allow_methods=[\"*\"], allow_headers=[\"*\"]"
+        "raw_data": "allow_methods=[\"*\"], allow_headers=[\"*\"]",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 39,
         "finding_id": 12,
         "evidence_type": "Source Code Audit (After - Remediated)",
         "description": "Strictly narrowed CORS allow_methods and allow_headers.",
-        "raw_data": "allow_methods=[\"GET\", \"POST\", \"OPTIONS\"],\nallow_headers=[\"Authorization\", \"Content-Type\", \"Accept\", \"Origin\", \"X-Requested-With\"]"
+        "raw_data": "allow_methods=[\"GET\", \"POST\", \"OPTIONS\"],\nallow_headers=[\"Authorization\", \"Content-Type\", \"Accept\", \"Origin\", \"X-Requested-With\"]",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -507,6 +672,8 @@
     "category": "Authentication",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-259: Use of Hard-coded Password",
     "owasp": "API2:2023 Broken Authentication",
@@ -515,6 +682,8 @@
     "impact": "Default credentials allow unauthorized users to gain immediate administrative control over the security assessment platform.",
     "remediation": "Refuse to start the server if ADMIN_PASSWORD is unset or equals the known default 'admin123'. Mandate strong password configuration via environment variables.",
     "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T21:13:34.430942",
     "evidence": [
       {
@@ -522,14 +691,20 @@
         "finding_id": 13,
         "evidence_type": "Source Code Audit (Before - Insecure)",
         "description": "Hardcoded default fallback in code.",
-        "raw_data": "admin_pw = os.getenv(\"ADMIN_PASSWORD\", \"admin123\") # Insecure default fallback"
+        "raw_data": "admin_pw = os.getenv(\"ADMIN_PASSWORD\", \"admin123\") # Insecure default fallback",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 41,
         "finding_id": 13,
         "evidence_type": "Source Code Audit (After - Remediated)",
         "description": "Strict check requiring explicit non-default ADMIN_PASSWORD.",
-        "raw_data": "ADMIN_PASSWORD = os.getenv(\"ADMIN_PASSWORD\")\nif not ADMIN_PASSWORD or ADMIN_PASSWORD == \"admin123\":\n    raise RuntimeError(\"ADMIN_PASSWORD unset or using insecure default. Refusing to start.\")"
+        "raw_data": "ADMIN_PASSWORD = os.getenv(\"ADMIN_PASSWORD\")\nif not ADMIN_PASSWORD or ADMIN_PASSWORD == \"admin123\":\n    raise RuntimeError(\"ADMIN_PASSWORD unset or using insecure default. Refusing to start.\")",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -540,6 +715,8 @@
     "category": "Authorization",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N (8.2)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N (8.2)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-862: Missing Authorization",
     "owasp": "API5:2023 Broken Function Level Authorization",
@@ -548,6 +725,8 @@
     "impact": "Unrestricted registration exposes internal endpoints and increases the attack surface for credential stuffing and privilege escalation.",
     "remediation": "Restrict POST /users/ so only authenticated users with the 'admin' role can create accounts.",
     "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T21:13:34.430942",
     "evidence": [
       {
@@ -555,14 +734,20 @@
         "finding_id": 14,
         "evidence_type": "Source Code Audit (Before - Insecure)",
         "description": "Open registration route without authorization.",
-        "raw_data": "@app.post(\"/users/\")\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):\n    # Insecure: Any client could register accounts"
+        "raw_data": "@app.post(\"/users/\")\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):\n    # Insecure: Any client could register accounts",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 43,
         "finding_id": 14,
         "evidence_type": "Source Code Audit (After - Remediated)",
         "description": "Restricted to authenticated admin users only.",
-        "raw_data": "@app.post(\"/users/\", response_model=schemas.UserResponse)\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):\n    if current_user.get(\"role\") != \"admin\":\n        raise HTTPException(status_code=403, detail=\"Admin privileges required\")"
+        "raw_data": "@app.post(\"/users/\", response_model=schemas.UserResponse)\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):\n    if current_user.get(\"role\") != \"admin\":\n        raise HTTPException(status_code=403, detail=\"Admin privileges required\")",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -573,6 +758,8 @@
     "category": "Configuration / Trust",
     "severity": "Medium",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N (5.3)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N (5.3)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-345: Insufficient Verification of Data Authenticity",
     "owasp": "API8:2023 Security Misconfiguration",
@@ -581,6 +768,8 @@
     "impact": "An attacker could claim a dropped or renamed handle and inject disinformation directly into Tier-1 intelligence feeds, triggering false incident alerts.",
     "remediation": "Enforce strict schema validation on configuration files. Require all Tier-1 enabled feeds to contain verified numeric 'accountId' values validated against the provider API.",
     "status": "Confirmed",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T21:13:34.430942",
     "evidence": [
       {
@@ -588,56 +777,80 @@
         "finding_id": 15,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @SaudiDCD (index 0) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"SaudiDCD\",\n  \"label\": \"Saudi Civil Defense\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"saudi-arabia\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"SaudiDCD\",\n  \"label\": \"Saudi Civil Defense\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"saudi-arabia\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 45,
         "finding_id": 15,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @InaTEWS_BMKG (index 1) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"InaTEWS_BMKG\",\n  \"label\": \"BMKG InaTEWS\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"indonesia\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"InaTEWS_BMKG\",\n  \"label\": \"BMKG InaTEWS\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"indonesia\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 46,
         "finding_id": 15,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @dsns_telegram (index 2) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"dsns_telegram\",\n  \"label\": \"Ukraine State Emergency Service\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"ukraine\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"dsns_telegram\",\n  \"label\": \"Ukraine State Emergency Service\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"ukraine\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 47,
         "finding_id": 15,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @PikudHaOref_all (index 3) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"PikudHaOref_all\",\n  \"label\": \"Israel Home Front Command\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"israel\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"PikudHaOref_all\",\n  \"label\": \"Israel Home Front Command\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"israel\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 48,
         "finding_id": 15,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @govsg (index 5) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"govsg\",\n  \"label\": \"Singapore Government\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"singapore\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"govsg\",\n  \"label\": \"Singapore Government\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"singapore\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 49,
         "finding_id": 15,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @VahidOnline (index 7) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"VahidOnline\",\n  \"label\": \"Vahid Online\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"iran\",\n  \"maxMessages\": 20\n}"
+        "raw_data": "{\n  \"handle\": \"VahidOnline\",\n  \"label\": \"Vahid Online\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"iran\",\n  \"maxMessages\": 20\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 50,
         "finding_id": 15,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @IDFofficial (index 44) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"IDFofficial\",\n  \"label\": \"IDF Official\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"IDFofficial\",\n  \"label\": \"IDF Official\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 51,
         "finding_id": 15,
         "evidence_type": "Config Snippet (news_channels.json)",
         "description": "Tier-1 channel @RocketAlert (index 45) missing verified accountId in news_channels.json.",
-        "raw_data": "{\n  \"handle\": \"RocketAlert\",\n  \"label\": \"Rocket Alert\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}"
+        "raw_data": "{\n  \"handle\": \"RocketAlert\",\n  \"label\": \"Rocket Alert\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -648,6 +861,8 @@
     "category": "Data Privacy / Storage",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-200: Exposure of Sensitive Information to an Unauthorized Actor",
     "owasp": "API3:2023 Broken Object Property Level Authorization",
@@ -656,6 +871,8 @@
     "impact": "Unrestricted access to exact facility coordinates could allow malicious actors to locate and target radiological facilities.",
     "remediation": "Implement role-based precision masking on coordinates. Round coordinates to a coarse grid (0.5 degrees) with deterministic noise for standard users, and restrict precise coordinates to authorized admins.",
     "status": "Confirmed",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T21:13:34.430942",
     "evidence": [
       {
@@ -663,70 +880,100 @@
         "finding_id": 16,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-001, Location: Barakah (Region), UAE exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-001\",\n  \"city\": \"Barakah (Region)\",\n  \"country\": \"UAE\",\n  \"lat\": 24.9802,\n  \"lon\": 53.6436\n}"
+        "raw_data": "{\n  \"id\": \"gi-001\",\n  \"city\": \"Barakah (Region)\",\n  \"country\": \"UAE\",\n  \"lat\": 24.9802,\n  \"lon\": 53.6436\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 53,
         "finding_id": 16,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-002, Location: Rovno (Region), Ukraine exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-002\",\n  \"city\": \"Rovno (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 51.9153,\n  \"lon\": 24.8494\n}"
+        "raw_data": "{\n  \"id\": \"gi-002\",\n  \"city\": \"Rovno (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 51.9153,\n  \"lon\": 24.8494\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 54,
         "finding_id": 16,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-003, Location: Richland (Region), USA exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-003\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 47.0989,\n  \"lon\": -118.1517\n}"
+        "raw_data": "{\n  \"id\": \"gi-003\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 47.0989,\n  \"lon\": -118.1517\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 55,
         "finding_id": 16,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-004, Location: Richland (Region), USA exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-004\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 45.9452,\n  \"lon\": -119.0939\n}"
+        "raw_data": "{\n  \"id\": \"gi-004\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 45.9452,\n  \"lon\": -119.0939\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 56,
         "finding_id": 16,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-005, Location: Novovoronezh (Region), Russia exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-005\",\n  \"city\": \"Novovoronezh (Region)\",\n  \"country\": \"Russia\",\n  \"lat\": 50.9362,\n  \"lon\": 37.7145\n}"
+        "raw_data": "{\n  \"id\": \"gi-005\",\n  \"city\": \"Novovoronezh (Region)\",\n  \"country\": \"Russia\",\n  \"lat\": 50.9362,\n  \"lon\": 37.7145\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 57,
         "finding_id": 16,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-006, Location: Fukushima (Region), Japan exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-006\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 36.8094,\n  \"lon\": 142.1962\n}"
+        "raw_data": "{\n  \"id\": \"gi-006\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 36.8094,\n  \"lon\": 142.1962\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 58,
         "finding_id": 16,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-007, Location: Bucha (Region), Ukraine exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-007\",\n  \"city\": \"Bucha (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 50.3937,\n  \"lon\": 30.2397\n}"
+        "raw_data": "{\n  \"id\": \"gi-007\",\n  \"city\": \"Bucha (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 50.3937,\n  \"lon\": 30.2397\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 59,
         "finding_id": 16,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-008, Location: Doel (Region), Belgium exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-008\",\n  \"city\": \"Doel (Region)\",\n  \"country\": \"Belgium\",\n  \"lat\": 50.8171,\n  \"lon\": 4.1403\n}"
+        "raw_data": "{\n  \"id\": \"gi-008\",\n  \"city\": \"Doel (Region)\",\n  \"country\": \"Belgium\",\n  \"lat\": 50.8171,\n  \"lon\": 4.1403\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 60,
         "finding_id": 16,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-009, Location: Fukushima (Region), Japan exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-009\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 38.7176,\n  \"lon\": 141.8825\n}"
+        "raw_data": "{\n  \"id\": \"gi-009\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 38.7176,\n  \"lon\": 141.8825\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 61,
         "finding_id": 16,
         "evidence_type": "Dataset Record (iaea_diif_db_safe)",
         "description": "Facility ID: gi-010, Location: Bruce (Region), Canada exposes exact lat/lon.",
-        "raw_data": "{\n  \"id\": \"gi-010\",\n  \"city\": \"Bruce (Region)\",\n  \"country\": \"Canada\",\n  \"lat\": 44.1078,\n  \"lon\": -82.0374\n}"
+        "raw_data": "{\n  \"id\": \"gi-010\",\n  \"city\": \"Bruce (Region)\",\n  \"country\": \"Canada\",\n  \"lat\": 44.1078,\n  \"lon\": -82.0374\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -737,6 +984,8 @@
     "category": "Data Privacy / Storage",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-552: Files or Directories Accessible to External Parties",
     "owasp": "API8:2023 Security Misconfiguration",
@@ -745,6 +994,8 @@
     "impact": "Any files copied into the Docker container image during build (COPY dataset/ dataset/) can be extracted from public container registries or compromised containers.",
     "remediation": "Move raw unmasked dataset files to a gitignored 'private/' directory excluded via .dockerignore and .gitignore. Only include synthetic or fuzzed datasets (iaea_diif_db_safe.json) in the container image.",
     "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T21:13:34.430942",
     "evidence": [
       {
@@ -752,14 +1003,20 @@
         "finding_id": 17,
         "evidence_type": "Docker Context Audit (Before - Insecure)",
         "description": "Raw unmasked datasets located in build context.",
-        "raw_data": "dataset/iaea_diif_db.json\ndataset/iaea_diif_facilities.json\ndataset/iaea_diif_tableau.json"
+        "raw_data": "dataset/iaea_diif_db.json\ndataset/iaea_diif_facilities.json\ndataset/iaea_diif_tableau.json",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 63,
         "finding_id": 17,
         "evidence_type": "Docker Context Audit (After - Remediated)",
         "description": "Raw files successfully moved to private/ directory and excluded from build context via .dockerignore.",
-        "raw_data": "Isolated in private/ directory (gitignored): True\nExcluded from Docker context via backend/.dockerignore"
+        "raw_data": "Isolated in private/ directory (gitignored): True\nExcluded from Docker context via backend/.dockerignore",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       }
     ]
   },
@@ -770,6 +1027,8 @@
     "category": "Dependency Management",
     "severity": "High",
     "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L (7.3)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L (7.3)",
+    "cvss_conservative": null,
     "confidence": "High",
     "cwe": "CWE-1395: Dependency on Vulnerable Third-Party Component",
     "owasp": "API10:2023 Unsafe Consumption of APIs",
@@ -778,6 +1037,8 @@
     "impact": "Exploitation of vulnerable packages during development or production build can lead to XSS, DoS, or credential exposure.",
     "remediation": "Update vulnerable dependencies using 'npm audit fix' and keep library versions pinned to secure releases.",
     "status": "Confirmed",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
     "created_at": "2026-10-25T21:13:34.430942",
     "evidence": [
       {
@@ -785,21 +1046,1737 @@
         "finding_id": 18,
         "evidence_type": "npm audit vulnerability",
         "description": "Vulnerable package: follow-redirects (Severity: high)",
-        "raw_data": "{\n  \"package\": \"follow-redirects\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"follow-redirects array-form headers bypass cross-origin credential stripping\",\n    \"follow-redirects sensitiveHeaders regex escaping can expose credential headers\"\n  ],\n  \"range\": \"1.16.0\"\n}"
+        "raw_data": "{\n  \"package\": \"follow-redirects\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"follow-redirects array-form headers bypass cross-origin credential stripping\",\n    \"follow-redirects sensitiveHeaders regex escaping can expose credential headers\"\n  ],\n  \"range\": \"1.16.0\"\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 65,
         "finding_id": 18,
         "evidence_type": "npm audit vulnerability",
         "description": "Vulnerable package: source-map-js (Severity: high)",
-        "raw_data": "{\n  \"package\": \"source-map-js\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"source-map-js allows event-loop denial of service through indexed source-map section offsets\"\n  ],\n  \"range\": \"1.0.0 - 1.2.1\"\n}"
+        "raw_data": "{\n  \"package\": \"source-map-js\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"source-map-js allows event-loop denial of service through indexed source-map section offsets\"\n  ],\n  \"range\": \"1.0.0 - 1.2.1\"\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
       },
       {
         "id": 66,
         "finding_id": 18,
         "evidence_type": "npm audit vulnerability",
         "description": "Vulnerable package: vite (Severity: high)",
-        "raw_data": "{\n  \"package\": \"vite\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"launch-editor: escapeCmdArgs() omits % escaping on Windows\",\n    \"launch-editor: Editor CLI flag misinterpretation causing arbitrary command execution for some editors\",\n    \"launch-editor: `fs.existsSync()` existence check can be bypassed on Windows\",\n    \"Vite: Cross origin script execution through Vite custom middleware\",\n    \"Vite: Files outside `server.fs.allow` could be served when project paths match system paths on non-Windows machine\",\n    \"Vite: First 4 bytes of files outside of `server.fs` setting is exposed by `?vite-wasm-instance`\"\n  ],\n  \"range\": \"8.3.0 - 8.3.2\"\n}"
+        "raw_data": "{\n  \"package\": \"vite\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"launch-editor: escapeCmdArgs() omits % escaping on Windows\",\n    \"launch-editor: Editor CLI flag misinterpretation causing arbitrary command execution for some editors\",\n    \"launch-editor: `fs.existsSync()` existence check can be bypassed on Windows\",\n    \"Vite: Cross origin script execution through Vite custom middleware\",\n    \"Vite: Files outside `server.fs.allow` could be served when project paths match system paths on non-Windows machine\",\n    \"Vite: First 4 bytes of files outside of `server.fs` setting is exposed by `?vite-wasm-instance`\"\n  ],\n  \"range\": \"8.3.0 - 8.3.2\"\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "scan_run_id": "scan_20261025_213905_c23157",
+    "title": "Missing 'exp' Enforcement in JWT Token Verification",
+    "category": "Authentication",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-613: Insufficient Session Expiration",
+    "owasp": "API2:2023 Broken Authentication",
+    "affected_component": "backend/main.py (get_current_user)",
+    "description": "JWT tokens must explicitly require an 'exp' (expiration) claim during verification to prevent indefinite access using stolen or unexpiring tokens.",
+    "impact": "If tokens do not require an expiration claim, an attacker holding a valid token can maintain persistent access indefinitely.",
+    "remediation": "Configure jwt.decode with options={'require': ['exp']} to mandate token expiration timestamps.",
+    "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:39:05.923128",
+    "evidence": [
+      {
+        "id": 67,
+        "finding_id": 19,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "Token decoded without requiring expiration claim.",
+        "raw_data": "jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # Insecure: missing options={'require': ['exp']}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 68,
+        "finding_id": 19,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Current implementation in backend/main.py.",
+        "raw_data": "payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options={\"require\": [\"exp\"]})",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "scan_run_id": "scan_20261025_213905_c23157",
+    "title": "Missing Role-Based Access Control on Modifying API Endpoints",
+    "category": "Authorization",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H (8.8)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H (8.8)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-285: Improper Authorization",
+    "owasp": "API5:2023 Broken Function Level Authorization",
+    "affected_component": "backend/main.py (POST routes)",
+    "description": "State-modifying endpoints (POST) must enforce administrative authorization checks to prevent unauthorized state alteration or privilege escalation.",
+    "impact": "Unprivileged users could submit unauthorized findings or register new users without administrative oversight.",
+    "remediation": "Verify the authenticated user's role equals 'admin' before executing state modifications on all POST routes.",
+    "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:39:05.923128",
+    "evidence": [
+      {
+        "id": 69,
+        "finding_id": 20,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "POST endpoint without role verification.",
+        "raw_data": "@app.post('/users/')\ndef create_user(user: schemas.UserCreate):\n    # Missing admin check: any user could register accounts",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 70,
+        "finding_id": 20,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Verified POST routes: ['/users/', '/findings/']. Unprotected: []",
+        "raw_data": "if current_user.get('role') != 'admin':\n    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Admin privileges required')",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "scan_run_id": "scan_20261025_213905_c23157",
+    "title": "Overly Permissive CORS Policy with Wildcard Methods and Headers",
+    "category": "API Security",
+    "severity": "Medium",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N (5.4)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N (5.4)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-942: Permissive Cross-domain Policy with Untrusted Domains",
+    "owasp": "API8:2023 Security Misconfiguration",
+    "affected_component": "backend/main.py (CORSMiddleware)",
+    "description": "CORS configuration used wildcard '*' for allow_methods and allow_headers, unnecessarily widening the cross-origin attack surface.",
+    "impact": "Permissive CORS policies can allow untrusted web applications to perform unintended HTTP methods and supply sensitive custom headers.",
+    "remediation": "Restrict allow_methods to explicitly needed verbs (GET, POST, OPTIONS) and allow_headers to standard required headers.",
+    "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:39:05.923128",
+    "evidence": [
+      {
+        "id": 71,
+        "finding_id": 21,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "Wildcard CORS configuration.",
+        "raw_data": "allow_methods=[\"*\"], allow_headers=[\"*\"]",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 72,
+        "finding_id": 21,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Strictly narrowed CORS allow_methods and allow_headers.",
+        "raw_data": "allow_methods=[\"GET\", \"POST\", \"OPTIONS\"],\nallow_headers=[\"Authorization\", \"Content-Type\", \"Accept\", \"Origin\", \"X-Requested-With\"]",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "scan_run_id": "scan_20261025_213905_c23157",
+    "title": "Hardcoded Insecure Default Password Fallback for Administrator Account",
+    "category": "Authentication",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-259: Use of Hard-coded Password",
+    "owasp": "API2:2023 Broken Authentication",
+    "affected_component": "backend/main.py (startup_event / ADMIN_PASSWORD check)",
+    "description": "The application previously had a fallback default admin password ('admin123') in code if the ADMIN_PASSWORD environment variable was not set.",
+    "impact": "Default credentials allow unauthorized users to gain immediate administrative control over the security assessment platform.",
+    "remediation": "Refuse to start the server if ADMIN_PASSWORD is unset or equals the known default 'admin123'. Mandate strong password configuration via environment variables.",
+    "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:39:05.923128",
+    "evidence": [
+      {
+        "id": 73,
+        "finding_id": 22,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "Hardcoded default fallback in code.",
+        "raw_data": "admin_pw = os.getenv(\"ADMIN_PASSWORD\", \"admin123\") # Insecure default fallback",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 74,
+        "finding_id": 22,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Strict check requiring explicit non-default ADMIN_PASSWORD.",
+        "raw_data": "ADMIN_PASSWORD = os.getenv(\"ADMIN_PASSWORD\")\nif not ADMIN_PASSWORD or ADMIN_PASSWORD == \"admin123\":\n    raise RuntimeError(\"ADMIN_PASSWORD unset or using insecure default. Refusing to start.\")",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "scan_run_id": "scan_20261025_213905_c23157",
+    "title": "Unrestricted Account Registration Without Admin Authorization",
+    "category": "Authorization",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N (8.2)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N (8.2)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-862: Missing Authorization",
+    "owasp": "API5:2023 Broken Function Level Authorization",
+    "affected_component": "backend/main.py (POST /users/)",
+    "description": "The POST /users/ route allowed open user creation without administrative authorization, allowing any actor to register accounts.",
+    "impact": "Unrestricted registration exposes internal endpoints and increases the attack surface for credential stuffing and privilege escalation.",
+    "remediation": "Restrict POST /users/ so only authenticated users with the 'admin' role can create accounts.",
+    "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:39:05.923128",
+    "evidence": [
+      {
+        "id": 75,
+        "finding_id": 23,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "Open registration route without authorization.",
+        "raw_data": "@app.post(\"/users/\")\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):\n    # Insecure: Any client could register accounts",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 76,
+        "finding_id": 23,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Restricted to authenticated admin users only.",
+        "raw_data": "@app.post(\"/users/\", response_model=schemas.UserResponse)\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):\n    if current_user.get(\"role\") != \"admin\":\n        raise HTTPException(status_code=403, detail=\"Admin privileges required\")",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "scan_run_id": "scan_20261025_213905_c23157",
+    "title": "Missing Account ID Verification in Tier-1 News Feeds (8 channels)",
+    "category": "Configuration / Trust",
+    "severity": "Medium",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N (5.3)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N (5.3)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-345: Insufficient Verification of Data Authenticity",
+    "owasp": "API8:2023 Security Misconfiguration",
+    "affected_component": "OSINT Feed Configs (news_channels.json, news_channels_x.json)",
+    "description": "Audited 8 Tier-1 intelligence feed channels across news_channels.json and news_channels_x.json missing verified numeric 'accountId' values. Unverified handles silently degrade feed integrity and are susceptible to identity forking if handles are renamed.",
+    "impact": "An attacker could claim a dropped or renamed handle and inject disinformation directly into Tier-1 intelligence feeds, triggering false incident alerts.",
+    "remediation": "Enforce strict schema validation on configuration files. Require all Tier-1 enabled feeds to contain verified numeric 'accountId' values validated against the provider API.",
+    "status": "Confirmed",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:39:05.923128",
+    "evidence": [
+      {
+        "id": 77,
+        "finding_id": 24,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @SaudiDCD (index 0) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"SaudiDCD\",\n  \"label\": \"Saudi Civil Defense\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"saudi-arabia\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 78,
+        "finding_id": 24,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @InaTEWS_BMKG (index 1) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"InaTEWS_BMKG\",\n  \"label\": \"BMKG InaTEWS\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"indonesia\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 79,
+        "finding_id": 24,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @dsns_telegram (index 2) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"dsns_telegram\",\n  \"label\": \"Ukraine State Emergency Service\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"ukraine\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 80,
+        "finding_id": 24,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @PikudHaOref_all (index 3) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"PikudHaOref_all\",\n  \"label\": \"Israel Home Front Command\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"israel\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 81,
+        "finding_id": 24,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @govsg (index 5) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"govsg\",\n  \"label\": \"Singapore Government\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"singapore\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 82,
+        "finding_id": 24,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @VahidOnline (index 7) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"VahidOnline\",\n  \"label\": \"Vahid Online\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"iran\",\n  \"maxMessages\": 20\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 83,
+        "finding_id": 24,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @IDFofficial (index 44) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"IDFofficial\",\n  \"label\": \"IDF Official\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 84,
+        "finding_id": 24,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @RocketAlert (index 45) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"RocketAlert\",\n  \"label\": \"Rocket Alert\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "scan_run_id": "scan_20261025_213905_c23157",
+    "title": "Exposure of Critical Infrastructure Coordinates (100 facilities)",
+    "category": "Data Privacy / Storage",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-200: Exposure of Sensitive Information to an Unauthorized Actor",
+    "owasp": "API3:2023 Broken Object Property Level Authorization",
+    "affected_component": "Critical Infrastructure Dataset Export",
+    "description": "The application dataset contains geographical coordinates for 100 critical infrastructure / irradiation facilities. Aggregating precise coordinates of nuclear/radiological infrastructure poses a serious physical security risk if accessed by unauthorized actors.",
+    "impact": "Unrestricted access to exact facility coordinates could allow malicious actors to locate and target radiological facilities.",
+    "remediation": "Implement role-based precision masking on coordinates. Round coordinates to a coarse grid (0.5 degrees) with deterministic noise for standard users, and restrict precise coordinates to authorized admins.",
+    "status": "Confirmed",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:39:05.923128",
+    "evidence": [
+      {
+        "id": 85,
+        "finding_id": 25,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-001, Location: Barakah (Region), UAE exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-001\",\n  \"city\": \"Barakah (Region)\",\n  \"country\": \"UAE\",\n  \"lat\": 24.9802,\n  \"lon\": 53.6436\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 86,
+        "finding_id": 25,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-002, Location: Rovno (Region), Ukraine exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-002\",\n  \"city\": \"Rovno (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 51.9153,\n  \"lon\": 24.8494\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 87,
+        "finding_id": 25,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-003, Location: Richland (Region), USA exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-003\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 47.0989,\n  \"lon\": -118.1517\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 88,
+        "finding_id": 25,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-004, Location: Richland (Region), USA exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-004\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 45.9452,\n  \"lon\": -119.0939\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 89,
+        "finding_id": 25,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-005, Location: Novovoronezh (Region), Russia exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-005\",\n  \"city\": \"Novovoronezh (Region)\",\n  \"country\": \"Russia\",\n  \"lat\": 50.9362,\n  \"lon\": 37.7145\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 90,
+        "finding_id": 25,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-006, Location: Fukushima (Region), Japan exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-006\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 36.8094,\n  \"lon\": 142.1962\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 91,
+        "finding_id": 25,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-007, Location: Bucha (Region), Ukraine exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-007\",\n  \"city\": \"Bucha (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 50.3937,\n  \"lon\": 30.2397\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 92,
+        "finding_id": 25,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-008, Location: Doel (Region), Belgium exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-008\",\n  \"city\": \"Doel (Region)\",\n  \"country\": \"Belgium\",\n  \"lat\": 50.8171,\n  \"lon\": 4.1403\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 93,
+        "finding_id": 25,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-009, Location: Fukushima (Region), Japan exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-009\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 38.7176,\n  \"lon\": 141.8825\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 94,
+        "finding_id": 25,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-010, Location: Bruce (Region), Canada exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-010\",\n  \"city\": \"Bruce (Region)\",\n  \"country\": \"Canada\",\n  \"lat\": 44.1078,\n  \"lon\": -82.0374\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "scan_run_id": "scan_20261025_213905_c23157",
+    "title": "Raw Critical Infrastructure Datasets Present in Build Context",
+    "category": "Data Privacy / Storage",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-552: Files or Directories Accessible to External Parties",
+    "owasp": "API8:2023 Security Misconfiguration",
+    "affected_component": "Docker Build Context (dataset/ vs private/)",
+    "description": "Raw IAEA DIIF database exports containing unmasked nuclear facility coordinates must not be present in the Docker build context or committed to repository tracking.",
+    "impact": "Any files copied into the Docker container image during build (COPY dataset/ dataset/) can be extracted from public container registries or compromised containers.",
+    "remediation": "Move raw unmasked dataset files to a gitignored 'private/' directory excluded via .dockerignore and .gitignore. Only include synthetic or fuzzed datasets (iaea_diif_db_safe.json) in the container image.",
+    "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:39:05.923128",
+    "evidence": [
+      {
+        "id": 95,
+        "finding_id": 26,
+        "evidence_type": "Docker Context Audit (Before - Insecure)",
+        "description": "Raw unmasked datasets located in build context.",
+        "raw_data": "dataset/iaea_diif_db.json\ndataset/iaea_diif_facilities.json\ndataset/iaea_diif_tableau.json",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 96,
+        "finding_id": 26,
+        "evidence_type": "Docker Context Audit (After - Remediated)",
+        "description": "Raw files successfully moved to private/ directory and excluded from build context via .dockerignore.",
+        "raw_data": "Isolated in private/ directory (gitignored): True\nExcluded from Docker context via backend/.dockerignore",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "scan_run_id": "scan_20261025_213905_c23157",
+    "title": "Vulnerable Frontend Dependencies Detected (3 packages via npm audit)",
+    "category": "Dependency Management",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L (7.3)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L (7.3)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-1395: Dependency on Vulnerable Third-Party Component",
+    "owasp": "API10:2023 Unsafe Consumption of APIs",
+    "affected_component": "frontend/package.json & package-lock.json",
+    "description": "Automated dependency security audit surfaced 3 known vulnerable dependencies in the frontend build pipeline.",
+    "impact": "Exploitation of vulnerable packages during development or production build can lead to XSS, DoS, or credential exposure.",
+    "remediation": "Update vulnerable dependencies using 'npm audit fix' and keep library versions pinned to secure releases.",
+    "status": "Confirmed",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:39:05.923128",
+    "evidence": [
+      {
+        "id": 97,
+        "finding_id": 27,
+        "evidence_type": "npm audit vulnerability",
+        "description": "Vulnerable package: follow-redirects (Severity: high)",
+        "raw_data": "{\n  \"package\": \"follow-redirects\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"follow-redirects array-form headers bypass cross-origin credential stripping\",\n    \"follow-redirects sensitiveHeaders regex escaping can expose credential headers\"\n  ],\n  \"range\": \"1.16.0\"\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 98,
+        "finding_id": 27,
+        "evidence_type": "npm audit vulnerability",
+        "description": "Vulnerable package: source-map-js (Severity: high)",
+        "raw_data": "{\n  \"package\": \"source-map-js\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"source-map-js allows event-loop denial of service through indexed source-map section offsets\"\n  ],\n  \"range\": \"1.0.0 - 1.2.1\"\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 99,
+        "finding_id": 27,
+        "evidence_type": "npm audit vulnerability",
+        "description": "Vulnerable package: vite (Severity: high)",
+        "raw_data": "{\n  \"package\": \"vite\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"launch-editor: escapeCmdArgs() omits % escaping on Windows\",\n    \"launch-editor: Editor CLI flag misinterpretation causing arbitrary command execution for some editors\",\n    \"launch-editor: `fs.existsSync()` existence check can be bypassed on Windows\",\n    \"Vite: Cross origin script execution through Vite custom middleware\",\n    \"Vite: Files outside `server.fs.allow` could be served when project paths match system paths on non-Windows machine\",\n    \"Vite: First 4 bytes of files outside of `server.fs` setting is exposed by `?vite-wasm-instance`\"\n  ],\n  \"range\": \"8.3.0 - 8.3.2\"\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "scan_run_id": "scan_20261025_215040_e532c2",
+    "title": "Missing 'exp' Enforcement in JWT Token Verification",
+    "category": "Authentication",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-613: Insufficient Session Expiration",
+    "owasp": "API2:2023 Broken Authentication",
+    "affected_component": "backend/main.py (get_current_user)",
+    "description": "JWT tokens must explicitly require an 'exp' (expiration) claim during verification to prevent indefinite access using stolen or unexpiring tokens.",
+    "impact": "If tokens do not require an expiration claim, an attacker holding a valid token can maintain persistent access indefinitely.",
+    "remediation": "Configure jwt.decode with options={'require': ['exp']} to mandate token expiration timestamps.",
+    "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:50:40.353628",
+    "evidence": [
+      {
+        "id": 100,
+        "finding_id": 28,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "Token decoded without requiring expiration claim.",
+        "raw_data": "jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # Insecure: missing options={'require': ['exp']}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 101,
+        "finding_id": 28,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Current implementation in backend/main.py.",
+        "raw_data": "payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options={\"require\": [\"exp\"]})",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "scan_run_id": "scan_20261025_215040_e532c2",
+    "title": "Missing Role-Based Access Control on Modifying API Endpoints",
+    "category": "Authorization",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H (8.8)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H (8.8)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-285: Improper Authorization",
+    "owasp": "API5:2023 Broken Function Level Authorization",
+    "affected_component": "backend/main.py (POST routes)",
+    "description": "State-modifying endpoints (POST) must enforce administrative authorization checks to prevent unauthorized state alteration or privilege escalation.",
+    "impact": "Unprivileged users could submit unauthorized findings or register new users without administrative oversight.",
+    "remediation": "Verify the authenticated user's role equals 'admin' before executing state modifications on all POST routes.",
+    "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:50:40.353628",
+    "evidence": [
+      {
+        "id": 102,
+        "finding_id": 29,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "POST endpoint without role verification.",
+        "raw_data": "@app.post('/users/')\ndef create_user(user: schemas.UserCreate):\n    # Missing admin check: any user could register accounts",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 103,
+        "finding_id": 29,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Verified POST routes: ['/users/', '/findings/']. Unprotected: []",
+        "raw_data": "if current_user.get('role') != 'admin':\n    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Admin privileges required')",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "scan_run_id": "scan_20261025_215040_e532c2",
+    "title": "Overly Permissive CORS Policy with Wildcard Methods and Headers",
+    "category": "API Security",
+    "severity": "Medium",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N (5.4)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N (5.4)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-942: Permissive Cross-domain Policy with Untrusted Domains",
+    "owasp": "API8:2023 Security Misconfiguration",
+    "affected_component": "backend/main.py (CORSMiddleware)",
+    "description": "CORS configuration used wildcard '*' for allow_methods and allow_headers, unnecessarily widening the cross-origin attack surface.",
+    "impact": "Permissive CORS policies can allow untrusted web applications to perform unintended HTTP methods and supply sensitive custom headers.",
+    "remediation": "Restrict allow_methods to explicitly needed verbs (GET, POST, OPTIONS) and allow_headers to standard required headers.",
+    "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:50:40.353628",
+    "evidence": [
+      {
+        "id": 104,
+        "finding_id": 30,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "Wildcard CORS configuration.",
+        "raw_data": "allow_methods=[\"*\"], allow_headers=[\"*\"]",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 105,
+        "finding_id": 30,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Strictly narrowed CORS allow_methods and allow_headers.",
+        "raw_data": "allow_methods=[\"GET\", \"POST\", \"OPTIONS\"],\nallow_headers=[\"Authorization\", \"Content-Type\", \"Accept\", \"Origin\", \"X-Requested-With\"]",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "scan_run_id": "scan_20261025_215040_e532c2",
+    "title": "Hardcoded Insecure Default Password Fallback for Administrator Account",
+    "category": "Authentication",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-259: Use of Hard-coded Password",
+    "owasp": "API2:2023 Broken Authentication",
+    "affected_component": "backend/main.py (startup_event / ADMIN_PASSWORD check)",
+    "description": "The application previously had a fallback default admin password ('admin123') in code if the ADMIN_PASSWORD environment variable was not set.",
+    "impact": "Default credentials allow unauthorized users to gain immediate administrative control over the security assessment platform.",
+    "remediation": "Refuse to start the server if ADMIN_PASSWORD is unset or equals the known default 'admin123'. Mandate strong password configuration via environment variables.",
+    "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:50:40.353628",
+    "evidence": [
+      {
+        "id": 106,
+        "finding_id": 31,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "Hardcoded default fallback in code.",
+        "raw_data": "admin_pw = os.getenv(\"ADMIN_PASSWORD\", \"admin123\") # Insecure default fallback",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 107,
+        "finding_id": 31,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Strict check requiring explicit non-default ADMIN_PASSWORD.",
+        "raw_data": "ADMIN_PASSWORD = os.getenv(\"ADMIN_PASSWORD\")\nif not ADMIN_PASSWORD or ADMIN_PASSWORD == \"admin123\":\n    raise RuntimeError(\"ADMIN_PASSWORD unset or using insecure default. Refusing to start.\")",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "scan_run_id": "scan_20261025_215040_e532c2",
+    "title": "Unrestricted Account Registration Without Admin Authorization",
+    "category": "Authorization",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N (8.2)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N (8.2)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-862: Missing Authorization",
+    "owasp": "API5:2023 Broken Function Level Authorization",
+    "affected_component": "backend/main.py (POST /users/)",
+    "description": "The POST /users/ route allowed open user creation without administrative authorization, allowing any actor to register accounts.",
+    "impact": "Unrestricted registration exposes internal endpoints and increases the attack surface for credential stuffing and privilege escalation.",
+    "remediation": "Restrict POST /users/ so only authenticated users with the 'admin' role can create accounts.",
+    "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:50:40.353628",
+    "evidence": [
+      {
+        "id": 108,
+        "finding_id": 32,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "Open registration route without authorization.",
+        "raw_data": "@app.post(\"/users/\")\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):\n    # Insecure: Any client could register accounts",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 109,
+        "finding_id": 32,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Restricted to authenticated admin users only.",
+        "raw_data": "@app.post(\"/users/\", response_model=schemas.UserResponse)\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):\n    if current_user.get(\"role\") != \"admin\":\n        raise HTTPException(status_code=403, detail=\"Admin privileges required\")",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "scan_run_id": "scan_20261025_215040_e532c2",
+    "title": "Missing Account ID Verification in Tier-1 News Feeds (8 channels)",
+    "category": "Configuration / Trust",
+    "severity": "Medium",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N (5.3)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N (5.3)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-345: Insufficient Verification of Data Authenticity",
+    "owasp": "API8:2023 Security Misconfiguration",
+    "affected_component": "OSINT Feed Configs (news_channels.json, news_channels_x.json)",
+    "description": "Audited 8 Tier-1 intelligence feed channels across news_channels.json and news_channels_x.json missing verified numeric 'accountId' values. Unverified handles silently degrade feed integrity and are susceptible to identity forking if handles are renamed.",
+    "impact": "An attacker could claim a dropped or renamed handle and inject disinformation directly into Tier-1 intelligence feeds, triggering false incident alerts.",
+    "remediation": "Enforce strict schema validation on configuration files. Require all Tier-1 enabled feeds to contain verified numeric 'accountId' values validated against the provider API.",
+    "status": "Confirmed",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:50:40.353628",
+    "evidence": [
+      {
+        "id": 110,
+        "finding_id": 33,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @SaudiDCD (index 0) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"SaudiDCD\",\n  \"label\": \"Saudi Civil Defense\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"saudi-arabia\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 111,
+        "finding_id": 33,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @InaTEWS_BMKG (index 1) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"InaTEWS_BMKG\",\n  \"label\": \"BMKG InaTEWS\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"indonesia\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 112,
+        "finding_id": 33,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @dsns_telegram (index 2) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"dsns_telegram\",\n  \"label\": \"Ukraine State Emergency Service\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"ukraine\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 113,
+        "finding_id": 33,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @PikudHaOref_all (index 3) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"PikudHaOref_all\",\n  \"label\": \"Israel Home Front Command\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"israel\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 114,
+        "finding_id": 33,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @govsg (index 5) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"govsg\",\n  \"label\": \"Singapore Government\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"singapore\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 115,
+        "finding_id": 33,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @VahidOnline (index 7) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"VahidOnline\",\n  \"label\": \"Vahid Online\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"iran\",\n  \"maxMessages\": 20\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 116,
+        "finding_id": 33,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @IDFofficial (index 44) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"IDFofficial\",\n  \"label\": \"IDF Official\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 117,
+        "finding_id": 33,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @RocketAlert (index 45) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"RocketAlert\",\n  \"label\": \"Rocket Alert\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "scan_run_id": "scan_20261025_215040_e532c2",
+    "title": "Exposure of Critical Infrastructure Coordinates (100 facilities)",
+    "category": "Data Privacy / Storage",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-200: Exposure of Sensitive Information to an Unauthorized Actor",
+    "owasp": "API3:2023 Broken Object Property Level Authorization",
+    "affected_component": "Critical Infrastructure Dataset Export",
+    "description": "The application dataset contains geographical coordinates for 100 critical infrastructure / irradiation facilities. Aggregating precise coordinates of nuclear/radiological infrastructure poses a serious physical security risk if accessed by unauthorized actors.",
+    "impact": "Unrestricted access to exact facility coordinates could allow malicious actors to locate and target radiological facilities.",
+    "remediation": "Implement role-based precision masking on coordinates. Round coordinates to a coarse grid (0.5 degrees) with deterministic noise for standard users, and restrict precise coordinates to authorized admins.",
+    "status": "Confirmed",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:50:40.353628",
+    "evidence": [
+      {
+        "id": 118,
+        "finding_id": 34,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-001, Location: Barakah (Region), UAE exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-001\",\n  \"city\": \"Barakah (Region)\",\n  \"country\": \"UAE\",\n  \"lat\": 24.9802,\n  \"lon\": 53.6436\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 119,
+        "finding_id": 34,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-002, Location: Rovno (Region), Ukraine exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-002\",\n  \"city\": \"Rovno (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 51.9153,\n  \"lon\": 24.8494\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 120,
+        "finding_id": 34,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-003, Location: Richland (Region), USA exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-003\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 47.0989,\n  \"lon\": -118.1517\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 121,
+        "finding_id": 34,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-004, Location: Richland (Region), USA exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-004\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 45.9452,\n  \"lon\": -119.0939\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 122,
+        "finding_id": 34,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-005, Location: Novovoronezh (Region), Russia exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-005\",\n  \"city\": \"Novovoronezh (Region)\",\n  \"country\": \"Russia\",\n  \"lat\": 50.9362,\n  \"lon\": 37.7145\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 123,
+        "finding_id": 34,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-006, Location: Fukushima (Region), Japan exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-006\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 36.8094,\n  \"lon\": 142.1962\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 124,
+        "finding_id": 34,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-007, Location: Bucha (Region), Ukraine exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-007\",\n  \"city\": \"Bucha (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 50.3937,\n  \"lon\": 30.2397\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 125,
+        "finding_id": 34,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-008, Location: Doel (Region), Belgium exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-008\",\n  \"city\": \"Doel (Region)\",\n  \"country\": \"Belgium\",\n  \"lat\": 50.8171,\n  \"lon\": 4.1403\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 126,
+        "finding_id": 34,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-009, Location: Fukushima (Region), Japan exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-009\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 38.7176,\n  \"lon\": 141.8825\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 127,
+        "finding_id": 34,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-010, Location: Bruce (Region), Canada exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-010\",\n  \"city\": \"Bruce (Region)\",\n  \"country\": \"Canada\",\n  \"lat\": 44.1078,\n  \"lon\": -82.0374\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "scan_run_id": "scan_20261025_215040_e532c2",
+    "title": "Raw Critical Infrastructure Datasets Present in Build Context",
+    "category": "Data Privacy / Storage",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-552: Files or Directories Accessible to External Parties",
+    "owasp": "API8:2023 Security Misconfiguration",
+    "affected_component": "Docker Build Context (dataset/ vs private/)",
+    "description": "Raw IAEA DIIF database exports containing unmasked nuclear facility coordinates must not be present in the Docker build context or committed to repository tracking.",
+    "impact": "Any files copied into the Docker container image during build (COPY dataset/ dataset/) can be extracted from public container registries or compromised containers.",
+    "remediation": "Move raw unmasked dataset files to a gitignored 'private/' directory excluded via .dockerignore and .gitignore. Only include synthetic or fuzzed datasets (iaea_diif_db_safe.json) in the container image.",
+    "status": "Remediated",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:50:40.353628",
+    "evidence": [
+      {
+        "id": 128,
+        "finding_id": 35,
+        "evidence_type": "Docker Context Audit (Before - Insecure)",
+        "description": "Raw unmasked datasets located in build context.",
+        "raw_data": "dataset/iaea_diif_db.json\ndataset/iaea_diif_facilities.json\ndataset/iaea_diif_tableau.json",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 129,
+        "finding_id": 35,
+        "evidence_type": "Docker Context Audit (After - Remediated)",
+        "description": "Raw files successfully moved to private/ directory and excluded from build context via .dockerignore.",
+        "raw_data": "Isolated in private/ directory (gitignored): True\nExcluded from Docker context via backend/.dockerignore",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "scan_run_id": "scan_20261025_215040_e532c2",
+    "title": "Vulnerable Frontend Dependencies Detected (3 packages via npm audit)",
+    "category": "Dependency Management",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L (7.3)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L (7.3)",
+    "cvss_conservative": null,
+    "confidence": "High",
+    "cwe": "CWE-1395: Dependency on Vulnerable Third-Party Component",
+    "owasp": "API10:2023 Unsafe Consumption of APIs",
+    "affected_component": "frontend/package.json & package-lock.json",
+    "description": "Automated dependency security audit surfaced 3 known vulnerable dependencies in the frontend build pipeline.",
+    "impact": "Exploitation of vulnerable packages during development or production build can lead to XSS, DoS, or credential exposure.",
+    "remediation": "Update vulnerable dependencies using 'npm audit fix' and keep library versions pinned to secure releases.",
+    "status": "Confirmed",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-25T21:50:40.353628",
+    "evidence": [
+      {
+        "id": 130,
+        "finding_id": 36,
+        "evidence_type": "npm audit vulnerability",
+        "description": "Vulnerable package: follow-redirects (Severity: high)",
+        "raw_data": "{\n  \"package\": \"follow-redirects\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"follow-redirects array-form headers bypass cross-origin credential stripping\",\n    \"follow-redirects sensitiveHeaders regex escaping can expose credential headers\"\n  ],\n  \"range\": \"1.16.0\"\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 131,
+        "finding_id": 36,
+        "evidence_type": "npm audit vulnerability",
+        "description": "Vulnerable package: source-map-js (Severity: high)",
+        "raw_data": "{\n  \"package\": \"source-map-js\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"source-map-js allows event-loop denial of service through indexed source-map section offsets\"\n  ],\n  \"range\": \"1.0.0 - 1.2.1\"\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      },
+      {
+        "id": 132,
+        "finding_id": 36,
+        "evidence_type": "npm audit vulnerability",
+        "description": "Vulnerable package: vite (Severity: high)",
+        "raw_data": "{\n  \"package\": \"vite\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"launch-editor: escapeCmdArgs() omits % escaping on Windows\",\n    \"launch-editor: Editor CLI flag misinterpretation causing arbitrary command execution for some editors\",\n    \"launch-editor: `fs.existsSync()` existence check can be bypassed on Windows\",\n    \"Vite: Cross origin script execution through Vite custom middleware\",\n    \"Vite: Files outside `server.fs.allow` could be served when project paths match system paths on non-Windows machine\",\n    \"Vite: First 4 bytes of files outside of `server.fs` setting is exposed by `?vite-wasm-instance`\"\n  ],\n  \"range\": \"8.3.0 - 8.3.2\"\n}",
+        "collected_at": null,
+        "environment": "local-assessment",
+        "sha256": null
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "scan_run_id": "scan_20261026_184102_3b75d0",
+    "title": "Missing 'exp' Enforcement in JWT Token Verification",
+    "category": "Authentication",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_conservative": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N (10.0)",
+    "confidence": "High",
+    "cwe": "CWE-613: Insufficient Session Expiration",
+    "owasp": "API2:2023 Broken Authentication",
+    "affected_component": "backend/main.py (get_current_user)",
+    "description": "JWT tokens must explicitly require an 'exp' (expiration) claim during verification to prevent indefinite access using stolen or unexpiring tokens.",
+    "impact": "If tokens do not require an expiration claim, an attacker holding a valid token can maintain persistent access indefinitely.",
+    "remediation": "Configure jwt.decode with options={'require': ['exp']} to mandate token expiration timestamps.",
+    "status": "Remediated",
+    "lifecycle": "RETESTED",
+    "lifecycle_history": "[{\"lifecycle\": \"DISCOVERED\", \"timestamp\": \"2026-10-26T18:41:01.780373\", \"note\": \"Identified during automated security assessment.\", \"actor\": \"Automated Scanner\"}, {\"lifecycle\": \"VALIDATED\", \"timestamp\": \"2026-10-26T18:41:01.780373\", \"note\": \"Target component and condition validated.\", \"actor\": \"Security Engine\"}, {\"lifecycle\": \"CONFIRMED\", \"timestamp\": \"2026-10-26T18:41:01.780373\", \"note\": \"Vulnerability pattern confirmed against codebase/configuration.\", \"actor\": \"Security Analyst\"}, {\"lifecycle\": \"REMEDIATED\", \"timestamp\": \"2026-10-26T18:41:01.780373\", \"note\": \"Configured jwt.decode with options={'require': ['exp']}.\", \"actor\": \"AST Code Auditor\"}, {\"lifecycle\": \"RETESTED\", \"timestamp\": \"2026-10-26T18:41:01.780373\", \"note\": \"Retest verification passed with zero regressions.\", \"actor\": \"Test Harness\"}]",
+    "created_at": "2026-10-26T18:41:02.678490",
+    "evidence": [
+      {
+        "id": 133,
+        "finding_id": 37,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "Token decoded without requiring expiration claim.",
+        "raw_data": "jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # Insecure: missing options={'require': ['exp']}",
+        "collected_at": "2026-10-26T18:41:01.780339",
+        "environment": "local-assessment",
+        "sha256": "96c79834369826e3690b25a9e88104ee164452e2ffbccbbff4768c59a96c9978"
+      },
+      {
+        "id": 134,
+        "finding_id": 37,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Current implementation in backend/main.py.",
+        "raw_data": "payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options={\"require\": [\"exp\"]})",
+        "collected_at": "2026-10-26T18:41:01.780345",
+        "environment": "local-assessment",
+        "sha256": "dcfa197fdb7221b30b610d0a3f29474315b68febd5d28996479af035b0fc77f2"
+      },
+      {
+        "id": 167,
+        "finding_id": 37,
+        "evidence_type": "PoC Proof of Fix (Token Expiration Proof)",
+        "description": "Automated before/after comparative execution proof demonstrating fix for: Missing 'exp' Enforcement in JWT Token Verification",
+        "raw_data": "=== PROOF OF CONCEPT: Token Expiration Proof ===\n\n--- BEFORE (Vulnerable Baseline) ---\nCrafted Token: eyJhbGciOiJIUzI1NiIsInR5c... (Missing 'exp' timestamp)\nHTTP Request: GET /protected-no-exp\nResponse Status: 200 OK (VULNERABLE)\nResponse Body: {'status': 'authorized', 'user': 'rogue_operator'}\nSecurity Assessment: The baseline system accepted tokens without expiration claims indefinitely. Stolen tokens never expired.\n\n--- AFTER (Remediated Protection) ---\nAttempted Token: eyJhbGciOiJIUzI1NiIsInR5c... (Signed with valid secret, but NO 'exp' claim)\nHTTP Request: GET /findings/\nResponse Status: 401 UNAUTHORIZED (PROTECTED)\nResponse Header: Bearer\nResponse Body: {'detail': 'Could not validate credentials'}\nSecurity Assessment: PyJWT enforces options={'require': ['exp']}. Tokens lacking an expiration claim are strictly rejected.\n",
+        "collected_at": "2026-10-26T18:44:30.780202",
+        "environment": "poc-testclient",
+        "sha256": "be0571262edcbe5a028334180031a686a6c9ad8dc654950c2b83f922355e9265"
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "scan_run_id": "scan_20261026_184102_3b75d0",
+    "title": "Missing Role-Based Access Control on Modifying API Endpoints",
+    "category": "Authorization",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H (8.8)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H (8.8)",
+    "cvss_conservative": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H (9.8)",
+    "confidence": "High",
+    "cwe": "CWE-285: Improper Authorization",
+    "owasp": "API5:2023 Broken Function Level Authorization",
+    "affected_component": "backend/main.py (POST routes)",
+    "description": "State-modifying endpoints (POST) must enforce administrative authorization checks to prevent unauthorized state alteration or privilege escalation.",
+    "impact": "Unprivileged users could submit unauthorized findings or register new users without administrative oversight.",
+    "remediation": "Verify the authenticated user's role equals 'admin' before executing state modifications on all POST routes.",
+    "status": "Remediated",
+    "lifecycle": "RETESTED",
+    "lifecycle_history": "[{\"lifecycle\": \"DISCOVERED\", \"timestamp\": \"2026-10-26T18:41:01.782109\", \"note\": \"Identified during automated security assessment.\", \"actor\": \"Automated Scanner\"}, {\"lifecycle\": \"VALIDATED\", \"timestamp\": \"2026-10-26T18:41:01.782109\", \"note\": \"Target component and condition validated.\", \"actor\": \"Security Engine\"}, {\"lifecycle\": \"CONFIRMED\", \"timestamp\": \"2026-10-26T18:41:01.782109\", \"note\": \"Vulnerability pattern confirmed against codebase/configuration.\", \"actor\": \"Security Analyst\"}, {\"lifecycle\": \"REMEDIATED\", \"timestamp\": \"2026-10-26T18:41:01.782109\", \"note\": \"Enforced current_user.get('role') == 'admin' check on all modifying POST endpoints.\", \"actor\": \"AST Code Auditor\"}, {\"lifecycle\": \"RETESTED\", \"timestamp\": \"2026-10-26T18:41:01.782109\", \"note\": \"Retest verification passed with zero regressions.\", \"actor\": \"Test Harness\"}]",
+    "created_at": "2026-10-26T18:41:02.678490",
+    "evidence": [
+      {
+        "id": 135,
+        "finding_id": 38,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "POST endpoint without role verification.",
+        "raw_data": "@app.post('/users/')\ndef create_user(user: schemas.UserCreate):\n    # Missing admin check: any user could register accounts",
+        "collected_at": "2026-10-26T18:41:01.782089",
+        "environment": "local-assessment",
+        "sha256": "cc2ce25a36018259c6f7526d070f6d879870605456fbd7d63c1e96fc0179ba82"
+      },
+      {
+        "id": 136,
+        "finding_id": 38,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Verified POST routes: ['/users/', '/findings/']. Unprotected: []",
+        "raw_data": "if current_user.get('role') != 'admin':\n    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Admin privileges required')",
+        "collected_at": "2026-10-26T18:41:01.782094",
+        "environment": "local-assessment",
+        "sha256": "8f41d7ae7332f692ffb6b46c42c4b64aba15ca1d8b1aedce6478a43ac61fd832"
+      },
+      {
+        "id": 168,
+        "finding_id": 38,
+        "evidence_type": "PoC Proof of Fix (Non-Admin POST Proof)",
+        "description": "Automated before/after comparative execution proof demonstrating fix for: Missing Role-Based Access Control on Modifying API Endpoints",
+        "raw_data": "=== PROOF OF CONCEPT: Non-Admin POST Proof ===\n\n--- BEFORE (Vulnerable Baseline) ---\nHTTP Request: POST /findings/ (Caller role: 'user')\nRequest Body: {'title': 'Unauthorized User-Injected Vulnerability', 'category': 'Spoofed Findings', 'severity': 'Low', 'affected_component': 'External Audit', 'description': 'Injected by non-admin actor without permission checks.'}\nResponse Status: 200 OK (VULNERABLE)\nResponse Body: {'title': 'Unauthorized User-Injected Vulnerability', 'category': 'Spoofed Findings', 'severity': 'Low', 'affected_component': 'External Audit', 'description': 'Injected by non-admin actor without permission checks.', 'id': 1}\nSecurity Assessment: Standard unprivileged users could inject arbitrary findings into the audit database.\n\n--- AFTER (Remediated Protection) ---\nAuthenticated User: 'poc_auditor_user' (Role: 'user')\nHTTP Request: POST /findings/\nResponse Status: 403 FORBIDDEN (PROTECTED)\nResponse Body: {'detail': 'Admin privileges required'}\nSecurity Assessment: Function-level authorization enforced. Modifying endpoints strictly require role='admin'.\n",
+        "collected_at": "2026-10-26T18:44:31.240719",
+        "environment": "poc-testclient",
+        "sha256": "f0574085d6aa1cbfd6992282b8c8652ad21fb51159ed130a0e6d4db36e9bef91"
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "scan_run_id": "scan_20261026_184102_3b75d0",
+    "title": "Overly Permissive CORS Policy with Wildcard Methods and Headers",
+    "category": "API Security",
+    "severity": "Medium",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N (5.4)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N (5.4)",
+    "cvss_conservative": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N (6.5)",
+    "confidence": "High",
+    "cwe": "CWE-942: Permissive Cross-domain Policy with Untrusted Domains",
+    "owasp": "API8:2023 Security Misconfiguration",
+    "affected_component": "backend/main.py (CORSMiddleware)",
+    "description": "CORS configuration used wildcard '*' for allow_methods and allow_headers, unnecessarily widening the cross-origin attack surface.",
+    "impact": "Permissive CORS policies can allow untrusted web applications to perform unintended HTTP methods and supply sensitive custom headers.",
+    "remediation": "Restrict allow_methods to explicitly needed verbs (GET, POST, OPTIONS) and allow_headers to standard required headers.",
+    "status": "Remediated",
+    "lifecycle": "RETESTED",
+    "lifecycle_history": "[{\"lifecycle\": \"DISCOVERED\", \"timestamp\": \"2026-10-26T18:41:01.782237\", \"note\": \"Identified during automated security assessment.\", \"actor\": \"Automated Scanner\"}, {\"lifecycle\": \"VALIDATED\", \"timestamp\": \"2026-10-26T18:41:01.782237\", \"note\": \"Target component and condition validated.\", \"actor\": \"Security Engine\"}, {\"lifecycle\": \"CONFIRMED\", \"timestamp\": \"2026-10-26T18:41:01.782237\", \"note\": \"Vulnerability pattern confirmed against codebase/configuration.\", \"actor\": \"Security Analyst\"}, {\"lifecycle\": \"REMEDIATED\", \"timestamp\": \"2026-10-26T18:41:01.782237\", \"note\": \"Narrowed allow_methods to ['GET', 'POST', 'OPTIONS'] and explicit allow_headers.\", \"actor\": \"AST Code Auditor\"}, {\"lifecycle\": \"RETESTED\", \"timestamp\": \"2026-10-26T18:41:01.782237\", \"note\": \"Retest verification passed with zero regressions.\", \"actor\": \"Test Harness\"}]",
+    "created_at": "2026-10-26T18:41:02.678490",
+    "evidence": [
+      {
+        "id": 137,
+        "finding_id": 39,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "Wildcard CORS configuration.",
+        "raw_data": "allow_methods=[\"*\"], allow_headers=[\"*\"]",
+        "collected_at": "2026-10-26T18:41:01.782226",
+        "environment": "local-assessment",
+        "sha256": "21c4f657b5744005e755fe52288abd6f7c9af67ec3d0b493cb2f449b916c6af2"
+      },
+      {
+        "id": 138,
+        "finding_id": 39,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Strictly narrowed CORS allow_methods and allow_headers.",
+        "raw_data": "allow_methods=[\"GET\", \"POST\", \"OPTIONS\"],\nallow_headers=[\"Authorization\", \"Content-Type\", \"Accept\", \"Origin\", \"X-Requested-With\"]",
+        "collected_at": "2026-10-26T18:41:01.782227",
+        "environment": "local-assessment",
+        "sha256": "670af98cd9f96d0065c7991eac75d57c5ba6f5b78df485ec69c784ca6a5905e7"
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "scan_run_id": "scan_20261026_184102_3b75d0",
+    "title": "Hardcoded Insecure Default Password Fallback for Administrator Account",
+    "category": "Authentication",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_conservative": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N (10.0)",
+    "confidence": "High",
+    "cwe": "CWE-259: Use of Hard-coded Password",
+    "owasp": "API2:2023 Broken Authentication",
+    "affected_component": "backend/main.py (startup_event / ADMIN_PASSWORD check)",
+    "description": "The application previously had a fallback default admin password ('admin123') in code if the ADMIN_PASSWORD environment variable was not set.",
+    "impact": "Default credentials allow unauthorized users to gain immediate administrative control over the security assessment platform.",
+    "remediation": "Refuse to start the server if ADMIN_PASSWORD is unset or equals the known default 'admin123'. Mandate strong password configuration via environment variables.",
+    "status": "Remediated",
+    "lifecycle": "RETESTED",
+    "lifecycle_history": "[{\"lifecycle\": \"DISCOVERED\", \"timestamp\": \"2026-10-26T18:41:01.782701\", \"note\": \"Identified during automated security assessment.\", \"actor\": \"Automated Scanner\"}, {\"lifecycle\": \"VALIDATED\", \"timestamp\": \"2026-10-26T18:41:01.782701\", \"note\": \"Target component and condition validated.\", \"actor\": \"Security Engine\"}, {\"lifecycle\": \"CONFIRMED\", \"timestamp\": \"2026-10-26T18:41:01.782701\", \"note\": \"Vulnerability pattern confirmed against codebase/configuration.\", \"actor\": \"Security Analyst\"}, {\"lifecycle\": \"REMEDIATED\", \"timestamp\": \"2026-10-26T18:41:01.782701\", \"note\": \"Server refuses startup if ADMIN_PASSWORD is unset or equals default 'admin123'.\", \"actor\": \"AST Code Auditor\"}, {\"lifecycle\": \"RETESTED\", \"timestamp\": \"2026-10-26T18:41:01.782701\", \"note\": \"Retest verification passed with zero regressions.\", \"actor\": \"Test Harness\"}]",
+    "created_at": "2026-10-26T18:41:02.678490",
+    "evidence": [
+      {
+        "id": 139,
+        "finding_id": 40,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "Hardcoded default fallback in code.",
+        "raw_data": "admin_pw = os.getenv(\"ADMIN_PASSWORD\", \"admin123\") # Insecure default fallback",
+        "collected_at": "2026-10-26T18:41:01.782689",
+        "environment": "local-assessment",
+        "sha256": "862ed44bfeb47599f1755dd2eb3cc05896d35afa53a80138bfee3d8ab9743464"
+      },
+      {
+        "id": 140,
+        "finding_id": 40,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Strict check requiring explicit non-default ADMIN_PASSWORD.",
+        "raw_data": "ADMIN_PASSWORD = os.getenv(\"ADMIN_PASSWORD\")\nif not ADMIN_PASSWORD or ADMIN_PASSWORD == \"admin123\":\n    raise RuntimeError(\"ADMIN_PASSWORD unset or using insecure default. Refusing to start.\")",
+        "collected_at": "2026-10-26T18:41:01.782691",
+        "environment": "local-assessment",
+        "sha256": "116fa483ce749f208a39e394366553cf50c31165e0054feff6f30c8f97e7a918"
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "scan_run_id": "scan_20261026_184102_3b75d0",
+    "title": "Unrestricted Account Registration Without Admin Authorization",
+    "category": "Authorization",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N (8.2)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:N (8.2)",
+    "cvss_conservative": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "confidence": "High",
+    "cwe": "CWE-862: Missing Authorization",
+    "owasp": "API5:2023 Broken Function Level Authorization",
+    "affected_component": "backend/main.py (POST /users/)",
+    "description": "The POST /users/ route allowed open user creation without administrative authorization, allowing any actor to register accounts.",
+    "impact": "Unrestricted registration exposes internal endpoints and increases the attack surface for credential stuffing and privilege escalation.",
+    "remediation": "Restrict POST /users/ so only authenticated users with the 'admin' role can create accounts.",
+    "status": "Remediated",
+    "lifecycle": "RETESTED",
+    "lifecycle_history": "[{\"lifecycle\": \"DISCOVERED\", \"timestamp\": \"2026-10-26T18:41:01.783905\", \"note\": \"Identified during automated security assessment.\", \"actor\": \"Automated Scanner\"}, {\"lifecycle\": \"VALIDATED\", \"timestamp\": \"2026-10-26T18:41:01.783905\", \"note\": \"Target component and condition validated.\", \"actor\": \"Security Engine\"}, {\"lifecycle\": \"CONFIRMED\", \"timestamp\": \"2026-10-26T18:41:01.783905\", \"note\": \"Vulnerability pattern confirmed against codebase/configuration.\", \"actor\": \"Security Analyst\"}, {\"lifecycle\": \"REMEDIATED\", \"timestamp\": \"2026-10-26T18:41:01.783905\", \"note\": \"Enforced admin check and minimum 10-char password validation on POST /users/.\", \"actor\": \"AST Code Auditor\"}, {\"lifecycle\": \"RETESTED\", \"timestamp\": \"2026-10-26T18:41:01.783905\", \"note\": \"Retest verification passed with zero regressions.\", \"actor\": \"Test Harness\"}]",
+    "created_at": "2026-10-26T18:41:02.678490",
+    "evidence": [
+      {
+        "id": 141,
+        "finding_id": 41,
+        "evidence_type": "Source Code Audit (Before - Insecure)",
+        "description": "Open registration route without authorization.",
+        "raw_data": "@app.post(\"/users/\")\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):\n    # Insecure: Any client could register accounts",
+        "collected_at": "2026-10-26T18:41:01.783895",
+        "environment": "local-assessment",
+        "sha256": "59e9dc1d6c4262f1d01b7bf717a13d4fe0c09492c601143006a826f51c5f2342"
+      },
+      {
+        "id": 142,
+        "finding_id": 41,
+        "evidence_type": "Source Code Audit (After - Remediated)",
+        "description": "Restricted to authenticated admin users only.",
+        "raw_data": "@app.post(\"/users/\", response_model=schemas.UserResponse)\ndef create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):\n    if current_user.get(\"role\") != \"admin\":\n        raise HTTPException(status_code=403, detail=\"Admin privileges required\")",
+        "collected_at": "2026-10-26T18:41:01.783897",
+        "environment": "local-assessment",
+        "sha256": "a13719edc72f6d9974ec52e2becc37d58d05a8cd605544db21c1b72261d010df"
+      },
+      {
+        "id": 166,
+        "finding_id": 41,
+        "evidence_type": "PoC Proof of Fix (Open Registration Proof)",
+        "description": "Automated before/after comparative execution proof demonstrating fix for: Unrestricted Account Registration Without Admin Authorization",
+        "raw_data": "=== PROOF OF CONCEPT: Open Registration Proof ===\n\n--- BEFORE (Vulnerable Baseline) ---\nHTTP Request: POST /users/ (Unauthenticated, no Authorization header)\nRequest Body: {'username': 'attacker_guest', 'password': '123', 'role': 'admin'}\nResponse Status: 200 OK (VULNERABLE)\nResponse Body: {'id': 3, 'username': 'attacker_guest', 'role': 'admin'}\nSecurity Assessment: ANY unauthenticated user could create accounts with weak passwords and self-assigned privileges.\n\n--- AFTER (Remediated Protection) ---\nTest A (No Token): POST /users/ -> Status: 401 UNAUTHORIZED\nDetail: Not authenticated\n\nTest B (Standard User Token): POST /users/ -> Status: 403 FORBIDDEN (PROTECTED)\nDetail: Admin privileges required to create new user accounts\nSecurity Assessment: Account creation is strictly restricted to authenticated administrators.\n",
+        "collected_at": "2026-10-26T18:44:30.774325",
+        "environment": "poc-testclient",
+        "sha256": "fc100e523d0073d98c232387d5a1d55d5e08f5d603a0e75800c8826aefb7101b"
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "scan_run_id": "scan_20261026_184102_3b75d0",
+    "title": "Missing Account ID Verification in Tier-1 News Feeds (8 channels)",
+    "category": "Configuration / Trust",
+    "severity": "Medium",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N (5.3)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N (5.3)",
+    "cvss_conservative": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N (7.5)",
+    "confidence": "High",
+    "cwe": "CWE-345: Insufficient Verification of Data Authenticity",
+    "owasp": "API8:2023 Security Misconfiguration",
+    "affected_component": "OSINT Feed Configs (news_channels.json, news_channels_x.json)",
+    "description": "Audited 8 Tier-1 intelligence feed channels across news_channels.json and news_channels_x.json missing verified numeric 'accountId' values. Unverified handles silently degrade feed integrity and are susceptible to identity forking if handles are renamed.",
+    "impact": "An attacker could claim a dropped or renamed handle and inject disinformation directly into Tier-1 intelligence feeds, triggering false incident alerts.",
+    "remediation": "Enforce strict schema validation on configuration files. Require all Tier-1 enabled feeds to contain verified numeric 'accountId' values validated against the provider API.",
+    "status": "Confirmed",
+    "lifecycle": "CONFIRMED",
+    "lifecycle_history": "[{\"lifecycle\": \"DISCOVERED\", \"timestamp\": \"2026-10-26T18:41:01.784097\", \"note\": \"Identified during automated security assessment.\", \"actor\": \"Automated Scanner\"}, {\"lifecycle\": \"VALIDATED\", \"timestamp\": \"2026-10-26T18:41:01.784097\", \"note\": \"Target component and condition validated.\", \"actor\": \"Security Engine\"}, {\"lifecycle\": \"CONFIRMED\", \"timestamp\": \"2026-10-26T18:41:01.784097\", \"note\": \"Vulnerability pattern confirmed against codebase/configuration.\", \"actor\": \"Security Analyst\"}]",
+    "created_at": "2026-10-26T18:41:02.678490",
+    "evidence": [
+      {
+        "id": 143,
+        "finding_id": 42,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @SaudiDCD (index 0) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"SaudiDCD\",\n  \"label\": \"Saudi Civil Defense\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"saudi-arabia\",\n  \"maxMessages\": 25\n}",
+        "collected_at": "2026-10-26T18:41:01.784047",
+        "environment": "local-assessment",
+        "sha256": "c8c3d68e0abf960f345f89b34fa38df3a31ec0a33eb1eefcaf79d76adc88051d"
+      },
+      {
+        "id": 144,
+        "finding_id": 42,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @InaTEWS_BMKG (index 1) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"InaTEWS_BMKG\",\n  \"label\": \"BMKG InaTEWS\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"indonesia\",\n  \"maxMessages\": 25\n}",
+        "collected_at": "2026-10-26T18:41:01.784054",
+        "environment": "local-assessment",
+        "sha256": "6fe10f6c9a6439b8b692507351bf2918319c6384b4d9b668f50072677f30f4e4"
+      },
+      {
+        "id": 145,
+        "finding_id": 42,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @dsns_telegram (index 2) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"dsns_telegram\",\n  \"label\": \"Ukraine State Emergency Service\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"ukraine\",\n  \"maxMessages\": 25\n}",
+        "collected_at": "2026-10-26T18:41:01.784060",
+        "environment": "local-assessment",
+        "sha256": "34364fb48f9ac85d40ebdd85b2eec4dee41d8f03f1a18b374d3f269e1e1d8e51"
+      },
+      {
+        "id": 146,
+        "finding_id": 42,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @PikudHaOref_all (index 3) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"PikudHaOref_all\",\n  \"label\": \"Israel Home Front Command\",\n  \"topic\": \"middleeast\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"israel\",\n  \"maxMessages\": 25\n}",
+        "collected_at": "2026-10-26T18:41:01.784064",
+        "environment": "local-assessment",
+        "sha256": "65751db4d4a0dccb3b6eb7c3956a9c718d90d561f7726d19c072a65e37594543"
+      },
+      {
+        "id": 147,
+        "finding_id": 42,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @govsg (index 5) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"govsg\",\n  \"label\": \"Singapore Government\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"singapore\",\n  \"maxMessages\": 25\n}",
+        "collected_at": "2026-10-26T18:41:01.784068",
+        "environment": "local-assessment",
+        "sha256": "e93d91d73adf8b394a72def6c97e390fab1dc30bbd3da6d7a403f27708cc00b2"
+      },
+      {
+        "id": 148,
+        "finding_id": 42,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @VahidOnline (index 7) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"VahidOnline\",\n  \"label\": \"Vahid Online\",\n  \"topic\": \"geopolitics\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"iran\",\n  \"maxMessages\": 20\n}",
+        "collected_at": "2026-10-26T18:41:01.784073",
+        "environment": "local-assessment",
+        "sha256": "bbb7cda190806ae21f9b2d264a85c6efa840f991174919a4a0c1f700c2d53497"
+      },
+      {
+        "id": 149,
+        "finding_id": 42,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @IDFofficial (index 44) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"IDFofficial\",\n  \"label\": \"IDF Official\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}",
+        "collected_at": "2026-10-26T18:41:01.784078",
+        "environment": "local-assessment",
+        "sha256": "f1ff988635af641c27e6ddf9ebd32f1d87ac5977ef4b6032f9aeead9ff360112"
+      },
+      {
+        "id": 150,
+        "finding_id": 42,
+        "evidence_type": "Config Snippet (news_channels.json)",
+        "description": "Tier-1 channel @RocketAlert (index 45) missing verified accountId in news_channels.json.",
+        "raw_data": "{\n  \"handle\": \"RocketAlert\",\n  \"label\": \"Rocket Alert\",\n  \"topic\": \"breaking\",\n  \"tier\": 1,\n  \"enabled\": true,\n  \"region\": \"middleeast\",\n  \"maxMessages\": 25\n}",
+        "collected_at": "2026-10-26T18:41:01.784081",
+        "environment": "local-assessment",
+        "sha256": "64740ea4898e6fb6b38dfbb070f78f72051bfc91179ed5b6337f5f3a0f01b6da"
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "scan_run_id": "scan_20261026_184102_3b75d0",
+    "title": "Exposure of Critical Infrastructure Coordinates (100 facilities)",
+    "category": "Data Privacy / Storage",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_conservative": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N (8.6)",
+    "confidence": "High",
+    "cwe": "CWE-200: Exposure of Sensitive Information to an Unauthorized Actor",
+    "owasp": "API3:2023 Broken Object Property Level Authorization",
+    "affected_component": "Critical Infrastructure Dataset Export",
+    "description": "The application dataset contains geographical coordinates for 100 critical infrastructure / irradiation facilities. Aggregating precise coordinates of nuclear/radiological infrastructure poses a serious physical security risk if accessed by unauthorized actors.",
+    "impact": "Unrestricted access to exact facility coordinates could allow malicious actors to locate and target radiological facilities.",
+    "remediation": "Implement role-based precision masking on coordinates. Round coordinates to a coarse grid (0.5 degrees) with deterministic noise for standard users, and restrict precise coordinates to authorized admins.",
+    "status": "Confirmed",
+    "lifecycle": "CONFIRMED",
+    "lifecycle_history": "[{\"lifecycle\": \"DISCOVERED\", \"timestamp\": \"2026-10-26T18:41:01.784166\", \"note\": \"Identified during automated security assessment.\", \"actor\": \"Automated Scanner\"}, {\"lifecycle\": \"VALIDATED\", \"timestamp\": \"2026-10-26T18:41:01.784166\", \"note\": \"Target component and condition validated.\", \"actor\": \"Security Engine\"}, {\"lifecycle\": \"CONFIRMED\", \"timestamp\": \"2026-10-26T18:41:01.784166\", \"note\": \"Vulnerability pattern confirmed against codebase/configuration.\", \"actor\": \"Security Analyst\"}]",
+    "created_at": "2026-10-26T18:41:02.678490",
+    "evidence": [
+      {
+        "id": 151,
+        "finding_id": 43,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-001, Location: Barakah (Region), UAE exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-001\",\n  \"city\": \"Barakah (Region)\",\n  \"country\": \"UAE\",\n  \"lat\": 24.9802,\n  \"lon\": 53.6436\n}",
+        "collected_at": "2026-10-26T18:41:01.784121",
+        "environment": "local-assessment",
+        "sha256": "77980bdbbeb9470c335a21fb8bb082b8f6efbdafde007ccf118c3890b18a2472"
+      },
+      {
+        "id": 152,
+        "finding_id": 43,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-002, Location: Rovno (Region), Ukraine exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-002\",\n  \"city\": \"Rovno (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 51.9153,\n  \"lon\": 24.8494\n}",
+        "collected_at": "2026-10-26T18:41:01.784126",
+        "environment": "local-assessment",
+        "sha256": "572ca95895a048cf4639be5494ccafb5ac2ad64a16c7ebf5bf1388829f2307cf"
+      },
+      {
+        "id": 153,
+        "finding_id": 43,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-003, Location: Richland (Region), USA exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-003\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 47.0989,\n  \"lon\": -118.1517\n}",
+        "collected_at": "2026-10-26T18:41:01.784130",
+        "environment": "local-assessment",
+        "sha256": "32814cde3dc27a7675b32a718acc0dc9b377e39794ced8bfe8a33c2e237f3373"
+      },
+      {
+        "id": 154,
+        "finding_id": 43,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-004, Location: Richland (Region), USA exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-004\",\n  \"city\": \"Richland (Region)\",\n  \"country\": \"USA\",\n  \"lat\": 45.9452,\n  \"lon\": -119.0939\n}",
+        "collected_at": "2026-10-26T18:41:01.784134",
+        "environment": "local-assessment",
+        "sha256": "38a3f593c35f7fd0dd61122435273947daea6f49055f3889d32ba10b8ff7775b"
+      },
+      {
+        "id": 155,
+        "finding_id": 43,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-005, Location: Novovoronezh (Region), Russia exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-005\",\n  \"city\": \"Novovoronezh (Region)\",\n  \"country\": \"Russia\",\n  \"lat\": 50.9362,\n  \"lon\": 37.7145\n}",
+        "collected_at": "2026-10-26T18:41:01.784138",
+        "environment": "local-assessment",
+        "sha256": "0aaae052d07b763e135dfb59eac34b69deeecf84c69a1bfb06059f1402c84388"
+      },
+      {
+        "id": 156,
+        "finding_id": 43,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-006, Location: Fukushima (Region), Japan exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-006\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 36.8094,\n  \"lon\": 142.1962\n}",
+        "collected_at": "2026-10-26T18:41:01.784141",
+        "environment": "local-assessment",
+        "sha256": "56153e7f969186357488f535156e89bc1fa9e72fc4e1f73b2ca918950915fccf"
+      },
+      {
+        "id": 157,
+        "finding_id": 43,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-007, Location: Bucha (Region), Ukraine exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-007\",\n  \"city\": \"Bucha (Region)\",\n  \"country\": \"Ukraine\",\n  \"lat\": 50.3937,\n  \"lon\": 30.2397\n}",
+        "collected_at": "2026-10-26T18:41:01.784145",
+        "environment": "local-assessment",
+        "sha256": "33c9ce5d796641546b868437d4436f30855030e8bccaa6bf80713001ab3def2d"
+      },
+      {
+        "id": 158,
+        "finding_id": 43,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-008, Location: Doel (Region), Belgium exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-008\",\n  \"city\": \"Doel (Region)\",\n  \"country\": \"Belgium\",\n  \"lat\": 50.8171,\n  \"lon\": 4.1403\n}",
+        "collected_at": "2026-10-26T18:41:01.784149",
+        "environment": "local-assessment",
+        "sha256": "cd5b1a4f902b0d6d07d0622d6322d9780590044e8b220cf84cbc02125454d145"
+      },
+      {
+        "id": 159,
+        "finding_id": 43,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-009, Location: Fukushima (Region), Japan exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-009\",\n  \"city\": \"Fukushima (Region)\",\n  \"country\": \"Japan\",\n  \"lat\": 38.7176,\n  \"lon\": 141.8825\n}",
+        "collected_at": "2026-10-26T18:41:01.784152",
+        "environment": "local-assessment",
+        "sha256": "da59f33eb72082ba8c50d70234aa2e91ebb0533b65a53aa31842d5cc83c7e41d"
+      },
+      {
+        "id": 160,
+        "finding_id": 43,
+        "evidence_type": "Dataset Record (iaea_diif_db_safe)",
+        "description": "Facility ID: gi-010, Location: Bruce (Region), Canada exposes exact lat/lon.",
+        "raw_data": "{\n  \"id\": \"gi-010\",\n  \"city\": \"Bruce (Region)\",\n  \"country\": \"Canada\",\n  \"lat\": 44.1078,\n  \"lon\": -82.0374\n}",
+        "collected_at": "2026-10-26T18:41:01.784156",
+        "environment": "local-assessment",
+        "sha256": "b655dd9f77e760ddad0756ac61a739d3f89891fd7d34468da742aa9b340e8840"
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "scan_run_id": "scan_20261026_184102_3b75d0",
+    "title": "Raw Critical Infrastructure Datasets Present in Build Context",
+    "category": "Data Privacy / Storage",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N (7.5)",
+    "cvss_conservative": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N (8.6)",
+    "confidence": "High",
+    "cwe": "CWE-552: Files or Directories Accessible to External Parties",
+    "owasp": "API8:2023 Security Misconfiguration",
+    "affected_component": "Docker Build Context (dataset/ vs private/)",
+    "description": "Raw IAEA DIIF database exports containing unmasked nuclear facility coordinates must not be present in the Docker build context or committed to repository tracking.",
+    "impact": "Any files copied into the Docker container image during build (COPY dataset/ dataset/) can be extracted from public container registries or compromised containers.",
+    "remediation": "Move raw unmasked dataset files to a gitignored 'private/' directory excluded via .dockerignore and .gitignore. Only include synthetic or fuzzed datasets (iaea_diif_db_safe.json) in the container image.",
+    "status": "Remediated",
+    "lifecycle": "RETESTED",
+    "lifecycle_history": "[{\"lifecycle\": \"DISCOVERED\", \"timestamp\": \"2026-10-26T18:41:01.784218\", \"note\": \"Identified during automated security assessment.\", \"actor\": \"Automated Scanner\"}, {\"lifecycle\": \"VALIDATED\", \"timestamp\": \"2026-10-26T18:41:01.784218\", \"note\": \"Target component and condition validated.\", \"actor\": \"Security Engine\"}, {\"lifecycle\": \"CONFIRMED\", \"timestamp\": \"2026-10-26T18:41:01.784218\", \"note\": \"Vulnerability pattern confirmed against codebase/configuration.\", \"actor\": \"Security Analyst\"}, {\"lifecycle\": \"REMEDIATED\", \"timestamp\": \"2026-10-26T18:41:01.784218\", \"note\": \"Raw unmasked datasets removed from build context and isolated into gitignored private/ repository storage.\", \"actor\": \"AST Code Auditor\"}, {\"lifecycle\": \"RETESTED\", \"timestamp\": \"2026-10-26T18:41:01.784218\", \"note\": \"Retest verification passed with zero regressions.\", \"actor\": \"Test Harness\"}]",
+    "created_at": "2026-10-26T18:41:02.678490",
+    "evidence": [
+      {
+        "id": 161,
+        "finding_id": 44,
+        "evidence_type": "Docker Context Audit (Before - Insecure)",
+        "description": "Raw unmasked datasets located in build context.",
+        "raw_data": "dataset/iaea_diif_db.json\ndataset/iaea_diif_facilities.json\ndataset/iaea_diif_tableau.json",
+        "collected_at": "2026-10-26T18:41:01.784207",
+        "environment": "local-assessment",
+        "sha256": "050e091b94ced588f67f2b5eb274efb1ac7caa2d88ff6a98c9ac21547c458551"
+      },
+      {
+        "id": 162,
+        "finding_id": 44,
+        "evidence_type": "Docker Context Audit (After - Remediated)",
+        "description": "Raw files successfully moved to private/ directory and excluded from build context via .dockerignore.",
+        "raw_data": "Isolated in private/ directory (gitignored): True\nExcluded from Docker context via backend/.dockerignore",
+        "collected_at": "2026-10-26T18:41:01.784210",
+        "environment": "local-assessment",
+        "sha256": "88dec7ee4385a9ce9e1f28520c147b6576c0a79383d1a1e191176ee6f2a40f60"
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "scan_run_id": "scan_20261026_184102_3b75d0",
+    "title": "Vulnerable Frontend Dependencies Detected (3 packages via npm audit)",
+    "category": "Dependency Management",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L (7.3)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L (7.3)",
+    "cvss_conservative": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H (10.0)",
+    "confidence": "High",
+    "cwe": "CWE-1395: Dependency on Vulnerable Third-Party Component",
+    "owasp": "API10:2023 Unsafe Consumption of APIs",
+    "affected_component": "frontend/package.json & package-lock.json",
+    "description": "Automated dependency security audit surfaced 3 known vulnerable dependencies in the frontend build pipeline.",
+    "impact": "Exploitation of vulnerable packages during development or production build can lead to XSS, DoS, or credential exposure.",
+    "remediation": "Update vulnerable dependencies using 'npm audit fix' and keep library versions pinned to secure releases.",
+    "status": "Confirmed",
+    "lifecycle": "CONFIRMED",
+    "lifecycle_history": "[{\"lifecycle\": \"DISCOVERED\", \"timestamp\": \"2026-10-26T18:41:02.678132\", \"note\": \"Identified during automated security assessment.\", \"actor\": \"Automated Scanner\"}, {\"lifecycle\": \"VALIDATED\", \"timestamp\": \"2026-10-26T18:41:02.678132\", \"note\": \"Target component and condition validated.\", \"actor\": \"Security Engine\"}, {\"lifecycle\": \"CONFIRMED\", \"timestamp\": \"2026-10-26T18:41:02.678132\", \"note\": \"Vulnerability pattern confirmed against codebase/configuration.\", \"actor\": \"Security Analyst\"}]",
+    "created_at": "2026-10-26T18:41:02.678490",
+    "evidence": [
+      {
+        "id": 163,
+        "finding_id": 45,
+        "evidence_type": "npm audit vulnerability",
+        "description": "Vulnerable package: follow-redirects (Severity: high)",
+        "raw_data": "{\n  \"package\": \"follow-redirects\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"follow-redirects array-form headers bypass cross-origin credential stripping\",\n    \"follow-redirects sensitiveHeaders regex escaping can expose credential headers\"\n  ],\n  \"range\": \"1.16.0\"\n}",
+        "collected_at": "2026-10-26T18:41:02.678050",
+        "environment": "local-assessment",
+        "sha256": "7ab73b44f5e6dcdeace99ccfbfbbd3f89907958870e59289b6f8b03cd2c72764"
+      },
+      {
+        "id": 164,
+        "finding_id": 45,
+        "evidence_type": "npm audit vulnerability",
+        "description": "Vulnerable package: source-map-js (Severity: high)",
+        "raw_data": "{\n  \"package\": \"source-map-js\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"source-map-js allows event-loop denial of service through indexed source-map section offsets\"\n  ],\n  \"range\": \"1.0.0 - 1.2.1\"\n}",
+        "collected_at": "2026-10-26T18:41:02.678080",
+        "environment": "local-assessment",
+        "sha256": "f0aaf6a89104c9e90cdd1d86437a0a1ccd036b27aa3b99cd0067d726b292e093"
+      },
+      {
+        "id": 165,
+        "finding_id": 45,
+        "evidence_type": "npm audit vulnerability",
+        "description": "Vulnerable package: vite (Severity: high)",
+        "raw_data": "{\n  \"package\": \"vite\",\n  \"severity\": \"high\",\n  \"via\": [\n    \"launch-editor: escapeCmdArgs() omits % escaping on Windows\",\n    \"launch-editor: Editor CLI flag misinterpretation causing arbitrary command execution for some editors\",\n    \"launch-editor: `fs.existsSync()` existence check can be bypassed on Windows\",\n    \"Vite: Cross origin script execution through Vite custom middleware\",\n    \"Vite: Files outside `server.fs.allow` could be served when project paths match system paths on non-Windows machine\",\n    \"Vite: First 4 bytes of files outside of `server.fs` setting is exposed by `?vite-wasm-instance`\"\n  ],\n  \"range\": \"8.3.0 - 8.3.2\"\n}",
+        "collected_at": "2026-10-26T18:41:02.678098",
+        "environment": "local-assessment",
+        "sha256": "c810d0b630e691d5ba0dcb043290d9e5b0e879bc7badc0166fcba240a5b4646e"
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "scan_run_id": null,
+    "title": "Security Verification: Authentication",
+    "category": "Automated PoC Verification",
+    "severity": "High",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "cvss_conservative": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N (10.0)",
+    "confidence": "High",
+    "cwe": null,
+    "owasp": null,
+    "affected_component": "PoC Test Harness: Login Lockout Proof",
+    "description": "Automated proof of concept test demonstrating vulnerability fix for Authentication.",
+    "impact": "Demonstrates regression-free remediation.",
+    "remediation": "Verified via automated Before/After TestClient harness.",
+    "status": "Remediated",
+    "lifecycle": "RETESTED",
+    "lifecycle_history": "[]",
+    "created_at": "2026-10-26T18:44:32.643878",
+    "evidence": [
+      {
+        "id": 169,
+        "finding_id": 46,
+        "evidence_type": "PoC Proof of Fix (Login Lockout Proof)",
+        "description": "Automated before/after comparative execution proof",
+        "raw_data": "=== PROOF OF CONCEPT: Login Lockout Proof ===\n\n--- BEFORE (Vulnerable Baseline) ---\nBrute-Force Attack Simulation (7 consecutive failed passwords):\nAttempt #1: Status 400 (Incorrect username or password)\nAttempt #2: Status 400 (Incorrect username or password)\nAttempt #3: Status 400 (Incorrect username or password)\nAttempt #4: Status 400 (Incorrect username or password)\nAttempt #5: Status 400 (Incorrect username or password)\nAttempt #6: Status 400 (Incorrect username or password)\nAttempt #7: Status 400 (Incorrect username or password)\nSecurity Assessment: INSECURE. The endpoint permitted unlimited automated password guessing without locking out the account.\n\n--- AFTER (Remediated Protection) ---\nHardened Rate-Limited Attack Simulation (6 consecutive failed passwords):\nAttempt #1: Status 400 BAD REQUEST -> Incorrect username or password\nAttempt #2: Status 400 BAD REQUEST -> Incorrect username or password\nAttempt #3: Status 400 BAD REQUEST -> Incorrect username or password\nAttempt #4: Status 400 BAD REQUEST -> Incorrect username or password\nAttempt #5: Status 400 BAD REQUEST -> Incorrect username or password\nAttempt #6: Status 403 FORBIDDEN -> Account is temporarily locked due to multiple failed login attempts. Try again in 14 minutes.\nLockout Trigger: Attempt #5 exceeded threshold -> Account locked for 15 minutes.\nSecurity Assessment: PROTECTED. Brute-force attacks are immediately halted via account lockout and audit logging.\n",
+        "collected_at": "2026-10-26T18:44:32.643878",
+        "environment": "poc-testclient",
+        "sha256": "8ee4b87a35e0bce33e59219af402fca5308812b958924e6e0c9a97e33a729941"
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "scan_run_id": null,
+    "title": "Attack Surface Inventory: 8 Exposed Routes Lacking Security Controls",
+    "category": "Attack Surface Inventory",
+    "severity": "Medium",
+    "cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N (6.5)",
+    "cvss_primary": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N (6.5)",
+    "cvss_conservative": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N (9.1)",
+    "confidence": "Needs Validation",
+    "cwe": "CWE-1008: Architectural Security Weakness",
+    "owasp": "API8:2023 Security Misconfiguration",
+    "affected_component": "Application Route Surface",
+    "description": "Static inventory audit discovered 8 routes lacking explicit authentication, rate limiting, or role checks. Further manual or runtime validation is required.",
+    "impact": "Uncontrolled endpoints may allow unauthorized information disclosure or resource starvation.",
+    "remediation": "Apply authentication, rate limits, and role enforcement across all flagged route decorators.",
+    "status": "Detected",
+    "lifecycle": "DISCOVERED",
+    "lifecycle_history": "[{\"lifecycle\": \"DISCOVERED\", \"timestamp\": \"2026-10-26T18:45:17.219777\", \"note\": \"Identified during automated security assessment.\", \"actor\": \"Automated Scanner\"}, {\"lifecycle\": \"VALIDATED\", \"timestamp\": \"2026-10-26T18:45:17.219777\", \"note\": \"Target component and condition validated.\", \"actor\": \"Security Engine\"}]",
+    "created_at": "2026-10-26T18:45:17.221392",
+    "evidence": [
+      {
+        "id": 170,
+        "finding_id": 47,
+        "evidence_type": "Attack Surface Inventory Scan",
+        "description": "Summary of 8 flagged routes identified during local static inspection.",
+        "raw_data": "[\n  {\n    \"path\": \"/token\",\n    \"method\": \"POST\",\n    \"function\": \"login\",\n    \"source_file\": \"backend/main.py\",\n    \"has_auth\": true,\n    \"has_rate_limit\": false,\n    \"has_role_check\": true,\n    \"missing_controls\": [\n      \"Missing Rate Limiting\"\n    ],\n    \"flagged\": true,\n    \"risk_level\": \"Medium\"\n  },\n  {\n    \"path\": \"/facilities/\",\n    \"method\": \"GET\",\n    \"function\": \"read_facilities\",\n    \"source_file\": \"backend/main.py\",\n    \"has_auth\": true,\n    \"has_rate_limit\": false,\n    \"has_role_check\": true,\n    \"missing_controls\": [\n      \"Missing Rate Limiting\"\n    ],\n    \"flagged\": true,\n    \"risk_level\": \"Medium\"\n  },\n  {\n    \"path\": \"/audit/\",\n    \"method\": \"GET\",\n    \"function\": \"read_audit_logs\",\n    \"source_file\": \"backend/main.py\",\n    \"has_auth\": true,\n    \"has_rate_limit\": false,\n    \"has_role_check\": true,\n    \"missing_controls\": [\n      \"Missing Rate Limiting\"\n    ],\n    \"flagged\": true,\n    \"risk_level\": \"Medium\"\n  },\n  {\n    \"path\": \"/users/\",\n    \"method\": \"POST\",\n    \"function\": \"baseline_open_registration\",\n    \"source_file\": \"backend/baseline/baseline_endpoints.py\",\n    \"has_auth\": false,\n    \"has_rate_limit\": false,\n    \"has_role_check\": false,\n    \"missing_controls\": [\n      \"Missing Authentication\",\n      \"Missing Rate Limiting\",\n      \"Missing RBAC / Admin Check\"\n    ],\n    \"flagged\": true,\n    \"risk_level\": \"High\"\n  },\n  {\n    \"path\": \"/token-unexpiring\",\n    \"method\": \"POST\",\n    \"function\": \"baseline_issue_unexpiring_token\",\n    \"source_file\": \"backend/baseline/baseline_endpoints.py\",\n    \"has_auth\": false,\n    \"has_rate_limit\": false,\n    \"has_role_check\": false,\n    \"missing_controls\": [\n      \"Missing Authentication\",\n      \"Missing Rate Limiting\",\n      \"Missing RBAC / Admin Check\"\n    ],\n    \"flagged\": true,\n    \"risk_level\": \"High\"\n  }\n]",
+        "collected_at": "2026-10-26T18:45:17.219750",
+        "environment": "static-ast",
+        "sha256": "ad3d082728691391c98e84c26db4e542ed941a1c5a452afea6ec39b9b12f80a5"
       }
     ]
   }

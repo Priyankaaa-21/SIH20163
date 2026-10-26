@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
 from datetime import datetime
-from .models import SeverityEnum, FindingStatusEnum
+from .models import SeverityEnum, FindingStatusEnum, FindingLifecycleEnum
 
 class UserBase(BaseModel):
     username: str
@@ -18,6 +18,9 @@ class EvidenceBase(BaseModel):
     evidence_type: str
     description: str
     raw_data: str
+    collected_at: Optional[datetime] = None
+    environment: Optional[str] = "local-assessment"
+    sha256: Optional[str] = None
 
 class EvidenceCreate(EvidenceBase):
     pass
@@ -32,6 +35,8 @@ class FindingBase(BaseModel):
     category: str
     severity: SeverityEnum
     cvss: Optional[str] = None
+    cvss_primary: Optional[str] = None
+    cvss_conservative: Optional[str] = None
     confidence: str
     cwe: Optional[str] = None
     owasp: Optional[str] = None
@@ -40,6 +45,8 @@ class FindingBase(BaseModel):
     impact: str
     remediation: str
     status: FindingStatusEnum
+    lifecycle: Optional[str] = "DISCOVERED"
+    lifecycle_history: Optional[str] = "[]"
     scan_run_id: Optional[str] = None
 
 class FindingCreate(FindingBase):
@@ -49,6 +56,18 @@ class Finding(FindingBase):
     id: int
     created_at: datetime
     evidence: List[Evidence] = []
+    model_config = ConfigDict(from_attributes=True)
+
+class AttackSurfaceResponse(BaseModel):
+    id: int
+    scan_path: str
+    total_routes: int
+    flagged_routes_count: int
+    services_count: int
+    configs_count: int
+    inventory_json: str
+    flagged_routes_json: str
+    created_at: datetime
     model_config = ConfigDict(from_attributes=True)
 
 class AuditLogResponse(BaseModel):

@@ -2,8 +2,7 @@ import os
 import json
 import subprocess
 from typing import List, Dict, Any
-from .base import SecurityCheck
-from .cvss import format_cvss
+from .base import SecurityCheck, build_finding, build_evidence
 
 class DependencyAuditCheck(SecurityCheck):
     def __init__(self, frontend_dir: str = None, backend_dir: str = None):
@@ -36,11 +35,9 @@ class DependencyAuditCheck(SecurityCheck):
                             "range": details.get("range", "unknown")
                         })
             except Exception:
-                # Fallback to known audited packages if subprocess times out / offline
                 pass
 
         if not npm_issues:
-            # Check package-lock.json statically for known unpinned/vulnerable items
             lock_path = os.path.join(self.frontend_dir, "package-lock.json")
             if os.path.exists(lock_path):
                 with open(lock_path, "r", encoding="utf-8") as f:
@@ -56,26 +53,30 @@ class DependencyAuditCheck(SecurityCheck):
         if npm_issues:
             evidence_items = []
             for issue in npm_issues[:8]:
-                evidence_items.append({
-                    "evidence_type": "npm audit vulnerability",
-                    "description": f"Vulnerable package: {issue['package']} (Severity: {issue['severity']})",
-                    "raw_data": json.dumps(issue, indent=2)
-                })
+                raw_issue = json.dumps(issue, indent=2)
+                evidence_items.append(build_evidence(
+                    evidence_type="npm audit vulnerability",
+                    description=f"Vulnerable package: {issue['package']} (Severity: {issue['severity']})",
+                    raw_data=raw_issue,
+                    environment="local-assessment"
+                ))
 
-            findings.append({
-                "title": f"Vulnerable Frontend Dependencies Detected ({len(npm_issues)} packages via npm audit)",
-                "category": "Dependency Management",
-                "severity": "High",
-                "cvss": format_cvss("CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L"), # 7.3
-                "confidence": "High",
-                "cwe": "CWE-1395: Dependency on Vulnerable Third-Party Component",
-                "owasp": "API10:2023 Unsafe Consumption of APIs",
-                "affected_component": "frontend/package.json & package-lock.json",
-                "description": f"Automated dependency security audit surfaced {len(npm_issues)} known vulnerable dependencies in the frontend build pipeline.",
-                "impact": "Exploitation of vulnerable packages during development or production build can lead to XSS, DoS, or credential exposure.",
-                "remediation": "Update vulnerable dependencies using 'npm audit fix' and keep library versions pinned to secure releases.",
-                "status": "Confirmed",
-                "evidence": evidence_items
-            })
+            findings.append(build_finding(
+                title=f"Vulnerable Frontend Dependencies Detected ({len(npm_issues)} packages via npm audit)",
+                category="Dependency Management",
+                severity="High",
+                cvss_vector="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L",
+                conservative_vector="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H",
+                confidence="High",
+                cwe="CWE-1395: Dependency on Vulnerable Third-Party Component",
+                owasp="API10:2023 Unsafe Consumption of APIs",
+                affected_component="frontend/package.json & package-lock.json",
+                description=f"Automated dependency security audit surfaced {len(npm_issues)} known vulnerable dependencies in the frontend build pipeline.",
+                impact="Exploitation of vulnerable packages during development or production build can lead to XSS, DoS, or credential exposure.",
+                remediation="Update vulnerable dependencies using 'npm audit fix' and keep library versions pinned to secure releases.",
+                status="Confirmed",
+                lifecycle="CONFIRMED",
+                evidence=evidence_items
+            ))
 
         return findings

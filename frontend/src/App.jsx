@@ -3,8 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } f
 import Dashboard from './components/Dashboard';
 import VulnerabilityDetails from './components/VulnerabilityDetails';
 import AuditLog from './components/AuditLog';
+import AttackSurface from './components/AttackSurface';
+import ScopeAuthorization from './components/ScopeAuthorization';
 import Login from './components/Login';
-import { Shield, LogOut, User } from 'lucide-react';
+import { Shield, LogOut, User, Crosshair, ShieldCheck } from 'lucide-react';
 import './index.css';
 
 function NavigationHeader({ handleLogout, userRole, username }) {
@@ -23,6 +25,20 @@ function NavigationHeader({ handleLogout, userRole, username }) {
           className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
         >
           Dashboard
+        </Link>
+
+        <Link 
+          to="/attack-surface" 
+          className={`nav-link ${location.pathname === '/attack-surface' ? 'active' : ''}`}
+        >
+          Attack Surface
+        </Link>
+
+        <Link 
+          to="/scope" 
+          className={`nav-link ${location.pathname === '/scope' ? 'active' : ''}`}
+        >
+          Scope & Auth
         </Link>
 
         {userRole === 'admin' && (
@@ -99,6 +115,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/finding/:id" element={<VulnerabilityDetails />} />
+          <Route path="/attack-surface" element={<AttackSurface />} />
+          <Route path="/scope" element={<ScopeAuthorization />} />
           <Route 
             path="/audit" 
             element={userRole === 'admin' ? <AuditLog /> : <Navigate to="/" replace />} 

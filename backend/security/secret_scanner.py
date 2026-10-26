@@ -1,13 +1,11 @@
 from typing import List, Dict, Any
-from .base import SecurityCheck
-from .cvss import format_cvss
+from .base import SecurityCheck, build_finding, build_evidence
 import re
 
 class SecretScannerCheck(SecurityCheck):
     def run_check(self, dataset: Dict[str, Any]) -> List[Dict[str, Any]]:
         findings = []
         
-        # Regex for catching things that look like common API keys or tokens
         patterns = {
             "AWS Access Key": r"AKIA[0-9A-Z]{16}",
             "Generic Bearer Token": r"Bearer\s+[a-zA-Z0-9_\-\.]{20,}"
@@ -16,7 +14,6 @@ class SecretScannerCheck(SecurityCheck):
         def search_dict(d, path=""):
             if isinstance(d, dict):
                 for k, v in d.items():
-                    # Check the key and value
                     if isinstance(v, str):
                         matched = False
                         for secret_type, pattern in patterns.items():
@@ -39,24 +36,27 @@ class SecretScannerCheck(SecurityCheck):
 
     def _add_finding(self, findings, key, value, path, secret_type):
         masked_val = f"{value[:4]}***{value[-4:]}" if len(value) > 8 else "***"
-        findings.append({
-            "title": f"Hardcoded Secrets Detected: {secret_type}",
-            "category": "Credentials Management",
-            "severity": "Critical",
-            "cvss": format_cvss("CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N"),  # 10.0
-            "confidence": "High",
-            "cwe": "CWE-798: Use of Hard-coded Credentials",
-            "owasp": "API2:2023 Broken Authentication",
-            "affected_component": f"Dataset Field: {path}.{key}",
-            "description": f"The dataset contains a hardcoded or exposed secret in the field '{key}'. Exposing tokens or passwords in datasets can lead to unauthorized access to associated third-party services.",
-            "impact": "An attacker could extract this token and authenticate to downstream services (APIs, databases, AWS) as the application, resulting in data breaches or system compromise.",
-            "remediation": "Remove the hardcoded secret from the dataset. Use a secure vault (like AWS Secrets Manager or HashiCorp Vault) and inject secrets at runtime using environment variables.",
-            "status": "Confirmed",
-            "evidence": [
-                {
-                    "evidence_type": "Dataset Record",
-                    "description": f"Found in path: {path}.{key}",
-                    "raw_data": f'"{key}": "{masked_val}"'
-                }
+        findings.append(build_finding(
+            title=f"Hardcoded Secrets Detected: {secret_type}",
+            category="Credentials Management",
+            severity="Critical",
+            cvss_vector="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N",
+            conservative_vector="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H",
+            confidence="High",
+            cwe="CWE-798: Use of Hard-coded Credentials",
+            owasp="API2:2023 Broken Authentication",
+            affected_component=f"Dataset Field: {path}.{key}",
+            description=f"The dataset contains a hardcoded or exposed secret in the field '{key}'. Exposing tokens or passwords in datasets can lead to unauthorized access to associated third-party services.",
+            impact="An attacker could extract this token and authenticate to downstream services (APIs, databases, AWS) as the application, resulting in data breaches or system compromise.",
+            remediation="Remove the hardcoded secret from the dataset. Use a secure vault (like AWS Secrets Manager or HashiCorp Vault) and inject secrets at runtime using environment variables.",
+            status="Confirmed",
+            lifecycle="CONFIRMED",
+            evidence=[
+                build_evidence(
+                    evidence_type="Dataset Record",
+                    description=f"Found in path: {path}.{key}",
+                    raw_data=f'"{key}": "{masked_val}"',
+                    environment="local-assessment"
+                )
             ]
-        })
+        ))
