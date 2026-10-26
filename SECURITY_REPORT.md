@@ -1,5 +1,5 @@
 # Security Assessment Report: World Monitor Application
-**Date Generated:** 2026-10-26 18:46:28 UTC  
+**Date Generated:** 2026-10-26 19:43:01 UTC  
 **Assessment Target:** World Monitor Application & Associated Intelligence Datasets  
 **Authority:** SIH 26163 Security Audit Team  
 **Environment:** Authorized, local air-gapped test environment  
@@ -2689,6 +2689,29 @@ Security Assessment: PyJWT enforces options={'require': ['exp']}. Tokens lacking
 
 ```
 
+**PoC Proof of Fix (Token Expiration Proof)** — Automated before/after comparative execution proof demonstrating fix for: Missing 'exp' Enforcement in JWT Token Verification
+- *Collected At:* `2026-10-26 19:42:39 UTC` | *Environment:* `poc-testclient` | *SHA-256:* `be0571262edcbe5a028334180031a686a6c9ad8dc654950c2b83f922355e9265`
+
+```text
+=== PROOF OF CONCEPT: Token Expiration Proof ===
+
+--- BEFORE (Vulnerable Baseline) ---
+Crafted Token: eyJhbGciOiJIUzI1NiIsInR5c... (Missing 'exp' timestamp)
+HTTP Request: GET /protected-no-exp
+Response Status: 200 OK (VULNERABLE)
+Response Body: {'status': 'authorized', 'user': 'rogue_operator'}
+Security Assessment: The baseline system accepted tokens without expiration claims indefinitely. Stolen tokens never expired.
+
+--- AFTER (Remediated Protection) ---
+Attempted Token: eyJhbGciOiJIUzI1NiIsInR5c... (Signed with valid secret, but NO 'exp' claim)
+HTTP Request: GET /findings/
+Response Status: 401 UNAUTHORIZED (PROTECTED)
+Response Header: Bearer
+Response Body: {'detail': 'Could not validate credentials'}
+Security Assessment: PyJWT enforces options={'require': ['exp']}. Tokens lacking an expiration claim are strictly rejected.
+
+```
+
 ---
 
 ### 5.38 Missing Role-Based Access Control on Modifying API Endpoints
@@ -2745,6 +2768,28 @@ if current_user.get('role') != 'admin':
 
 **PoC Proof of Fix (Non-Admin POST Proof)** — Automated before/after comparative execution proof demonstrating fix for: Missing Role-Based Access Control on Modifying API Endpoints
 - *Collected At:* `2026-10-26 18:44:31 UTC` | *Environment:* `poc-testclient` | *SHA-256:* `f0574085d6aa1cbfd6992282b8c8652ad21fb51159ed130a0e6d4db36e9bef91`
+
+```text
+=== PROOF OF CONCEPT: Non-Admin POST Proof ===
+
+--- BEFORE (Vulnerable Baseline) ---
+HTTP Request: POST /findings/ (Caller role: 'user')
+Request Body: {'title': 'Unauthorized User-Injected Vulnerability', 'category': 'Spoofed Findings', 'severity': 'Low', 'affected_component': 'External Audit', 'description': 'Injected by non-admin actor without permission checks.'}
+Response Status: 200 OK (VULNERABLE)
+Response Body: {'title': 'Unauthorized User-Injected Vulnerability', 'category': 'Spoofed Findings', 'severity': 'Low', 'affected_component': 'External Audit', 'description': 'Injected by non-admin actor without permission checks.', 'id': 1}
+Security Assessment: Standard unprivileged users could inject arbitrary findings into the audit database.
+
+--- AFTER (Remediated Protection) ---
+Authenticated User: 'poc_auditor_user' (Role: 'user')
+HTTP Request: POST /findings/
+Response Status: 403 FORBIDDEN (PROTECTED)
+Response Body: {'detail': 'Admin privileges required'}
+Security Assessment: Function-level authorization enforced. Modifying endpoints strictly require role='admin'.
+
+```
+
+**PoC Proof of Fix (Non-Admin POST Proof)** — Automated before/after comparative execution proof demonstrating fix for: Missing Role-Based Access Control on Modifying API Endpoints
+- *Collected At:* `2026-10-26 19:42:39 UTC` | *Environment:* `poc-testclient` | *SHA-256:* `f0574085d6aa1cbfd6992282b8c8652ad21fb51159ed130a0e6d4db36e9bef91`
 
 ```text
 === PROOF OF CONCEPT: Non-Admin POST Proof ===
@@ -2928,6 +2973,29 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current
 
 **PoC Proof of Fix (Open Registration Proof)** — Automated before/after comparative execution proof demonstrating fix for: Unrestricted Account Registration Without Admin Authorization
 - *Collected At:* `2026-10-26 18:44:30 UTC` | *Environment:* `poc-testclient` | *SHA-256:* `fc100e523d0073d98c232387d5a1d55d5e08f5d603a0e75800c8826aefb7101b`
+
+```text
+=== PROOF OF CONCEPT: Open Registration Proof ===
+
+--- BEFORE (Vulnerable Baseline) ---
+HTTP Request: POST /users/ (Unauthenticated, no Authorization header)
+Request Body: {'username': 'attacker_guest', 'password': '123', 'role': 'admin'}
+Response Status: 200 OK (VULNERABLE)
+Response Body: {'id': 3, 'username': 'attacker_guest', 'role': 'admin'}
+Security Assessment: ANY unauthenticated user could create accounts with weak passwords and self-assigned privileges.
+
+--- AFTER (Remediated Protection) ---
+Test A (No Token): POST /users/ -> Status: 401 UNAUTHORIZED
+Detail: Not authenticated
+
+Test B (Standard User Token): POST /users/ -> Status: 403 FORBIDDEN (PROTECTED)
+Detail: Admin privileges required to create new user accounts
+Security Assessment: Account creation is strictly restricted to authenticated administrators.
+
+```
+
+**PoC Proof of Fix (Open Registration Proof)** — Automated before/after comparative execution proof demonstrating fix for: Unrestricted Account Registration Without Admin Authorization
+- *Collected At:* `2026-10-26 19:42:39 UTC` | *Environment:* `poc-testclient` | *SHA-256:* `fc100e523d0073d98c232387d5a1d55d5e08f5d603a0e75800c8826aefb7101b`
 
 ```text
 === PROOF OF CONCEPT: Open Registration Proof ===
@@ -3435,6 +3503,36 @@ Verified via automated Before/After TestClient harness.
 
 **PoC Proof of Fix (Login Lockout Proof)** — Automated before/after comparative execution proof
 - *Collected At:* `2026-10-26 18:44:32 UTC` | *Environment:* `poc-testclient` | *SHA-256:* `8ee4b87a35e0bce33e59219af402fca5308812b958924e6e0c9a97e33a729941`
+
+```text
+=== PROOF OF CONCEPT: Login Lockout Proof ===
+
+--- BEFORE (Vulnerable Baseline) ---
+Brute-Force Attack Simulation (7 consecutive failed passwords):
+Attempt #1: Status 400 (Incorrect username or password)
+Attempt #2: Status 400 (Incorrect username or password)
+Attempt #3: Status 400 (Incorrect username or password)
+Attempt #4: Status 400 (Incorrect username or password)
+Attempt #5: Status 400 (Incorrect username or password)
+Attempt #6: Status 400 (Incorrect username or password)
+Attempt #7: Status 400 (Incorrect username or password)
+Security Assessment: INSECURE. The endpoint permitted unlimited automated password guessing without locking out the account.
+
+--- AFTER (Remediated Protection) ---
+Hardened Rate-Limited Attack Simulation (6 consecutive failed passwords):
+Attempt #1: Status 400 BAD REQUEST -> Incorrect username or password
+Attempt #2: Status 400 BAD REQUEST -> Incorrect username or password
+Attempt #3: Status 400 BAD REQUEST -> Incorrect username or password
+Attempt #4: Status 400 BAD REQUEST -> Incorrect username or password
+Attempt #5: Status 400 BAD REQUEST -> Incorrect username or password
+Attempt #6: Status 403 FORBIDDEN -> Account is temporarily locked due to multiple failed login attempts. Try again in 14 minutes.
+Lockout Trigger: Attempt #5 exceeded threshold -> Account locked for 15 minutes.
+Security Assessment: PROTECTED. Brute-force attacks are immediately halted via account lockout and audit logging.
+
+```
+
+**PoC Proof of Fix (Login Lockout Proof)** — Automated before/after comparative execution proof demonstrating fix for: Security Verification: Authentication
+- *Collected At:* `2026-10-26 19:42:40 UTC` | *Environment:* `poc-testclient` | *SHA-256:* `8ee4b87a35e0bce33e59219af402fca5308812b958924e6e0c9a97e33a729941`
 
 ```text
 === PROOF OF CONCEPT: Login Lockout Proof ===
